@@ -1,4 +1,5 @@
 import { chat } from "../llm/client.js";
+import { loadConfig } from "../config.js";
 import { cleanProse, scoreText } from "./score.js";
 import { countWords } from "../util/text.js";
 import type { Project } from "../store/project.js";
@@ -53,7 +54,7 @@ export async function polishScene(args: {
     if (bestReport.pass || bestReport.issues.length === 0) break;
 
     const critique = critiquePrompt(bestReport);
-    const res = await chat({
+      const res = await chat({
       messages: [
         { role: "system", content: POLISH_SYSTEM + renderVoiceSpec(voice) },
         {
@@ -66,8 +67,9 @@ export async function polishScene(args: {
           ].join("\n"),
         },
       ],
-      tier: "pro",
+      tier: loadConfig().polishTier,
       temperature: 0.35,
+      maxTokens: Math.min(8000, Math.round(scene.targetWords * 2.2) + 1800),
       tag: "polish",
     });
 

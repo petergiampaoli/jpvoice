@@ -39,27 +39,45 @@ cd jpvoice
 npm install
 npm run build
 npm link            # optional: puts `jpvoice` on PATH
-cp .env.example .env
+jpvoice doctor
 ```
 
-`.env`:
+`jpvoice` uses your existing **OpenCode Go** credentials automatically. It reads `~/.local/share/opencode/auth.json` (or `OPENCODE_API_KEY`), calls `https://opencode.ai/inference/go/openai/v1`, sends a stable `x-opencode-session` per project, and identifies itself as `jpvoice/0.1.0`. Nothing needs to be copied into `.env`.
 
+To use DeepSeek directly instead:
+
+```bash
+export JPVOICE_PROVIDER=deepseek
+export DEEPSEEK_API_KEY=sk-...
 ```
-DEEPSEEK_API_KEY=sk-...
-```
 
-Models default to `deepseek-v4.1-flash` (drafting) and `deepseek-v4-pro` (planning, polishing). Override with `JPVOICE_MODEL_FLASH` / `JPVOICE_MODEL_PRO`. The client is OpenAI-compatible, so `deepseek-chat` / `deepseek-reasoner` also work.
+Options live in `.env.example`. No key at all? `JPVOICE_MOCK=1` runs the whole pipeline offline with deterministic canned prose.
 
-No key? Set `JPVOICE_MOCK=1` to run the entire pipeline offline with deterministic canned prose.
+> **A note on the gateway.** OpenCode Go is documented as a coding-agent endpoint, and traffic is monitored for use that degrades it for others. Story generation is not coding traffic. For occasional use it is fine; for a 40,000-word novella, point `JPVOICE_PROVIDER=deepseek` at your own DeepSeek key instead. The client is OpenAI-compatible either way.
+
+### Cost and model routing
+
+Reasoning tokens are not bounded by `max_tokens` on every model. Left at defaults, one Pro call generated **21,759 reasoning tokens** — four and a half minutes and $0.18 for three short paragraphs. So each pass pins `reasoning_effort`, and the default is `none` for prose passes:
+
+| Pass | Tier | Effort | Measured |
+|---|---|---|---|
+| Plan | Pro | low | 12–32s · $0.013–0.030 |
+| Anchors | Flash | none | 48–97s · $0.00025 for 3 passages |
+| Draft | Flash | none | 1,457 words in 20s · $0.0006 |
+| Polish | Flash | none | 82→85 conformance in 26s · $0.002 |
+| Expand | Flash | none | 1,457→1,827 words in 8s · $0.0005 |
+
+A 1,600-word story costs about **$0.024** end to end. Pro is available for polish with `JPVOICE_TIER_POLISH=pro`, but in the A/B it was 25× the cost and scored no better on line editing. Reasoning effort is advisory, not a hard cap: the same prompt at `low` produced 595 reasoning tokens on one run and 11,181 on another. `none` is the only setting that behaves predictably.
 
 ## Quickstart
 
 ```bash
 jpvoice voices list
-jpvoice --dir out init "The Inherited Room" \
+jpvoice init "The Inherited Room" \
   --voice kawabata/seidensticker \
   --words 3000 \
-  --premise "A woman returns to her dead sister's apartment and finds the life she did not take."
+  --premise "A woman returns to her dead sister's apartment and finds the life she did not take." \
+  --path work/inherited-room
 
 jpvoice --dir work/inherited-room plan
 jpvoice --dir work/inherited-room anchors     # review the frozen register samples
@@ -225,7 +243,7 @@ voices/
   pairings.yaml   canonical vs synthetic
 ```
 
-Passes use different tiers deliberately: **Pro** for planning, anchor generation, polishing, and bible extraction; **Flash** for drafting and re-voicing. A 3,000-word story costs pennies; a 30,000-word novella is a few dollars.
+Passes use different tiers deliberately: **Pro** for structural planning; **Flash** for drafting, anchors, re-voicing, and line editing. The measured routing is in the cost table above.
 
 ## Limitations, stated plainly
 
@@ -244,7 +262,7 @@ No copyrighted text is stored or shipped. Every voice is a hand-authored descrip
 
 ```bash
 npm run dev -- voices list
-npm test                 # 31 tests: segmentation, stylometry, conformance, budgets, composition
+npm test                 # 33 tests: segmentation, stylometry, conformance, budgets, composition
 npm run build
 npx tsx scripts/demo.ts  # the two-register comparison
 ```

@@ -76,8 +76,11 @@ export function structureFor(totalWords: number, form: FormSpec): Structure {
   const targetScene = (sceneMin + sceneMax) / 2;
   const sceneCount = Math.max(1, Math.min(form.sceneCap, Math.round(totalWords / targetScene)));
 
-  const chapters =
+  const proposedChapters =
     totalWords <= 1500 ? 1 : Math.max(2, Math.min(18, Math.round(sceneCount / 3)));
+  // Never create more chapters than there are scenes: that produces an empty
+  // chapter with a zero-word budget.
+  const chapters = Math.max(1, Math.min(sceneCount, proposedChapters));
 
   const budgets = allocate(totalWords, sceneCount, sceneMin, sceneMax);
 

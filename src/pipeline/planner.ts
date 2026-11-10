@@ -17,7 +17,12 @@ export type PlanInput = {
 
 const PLAN_SYSTEM = `You are a story architect working inside a specific prose register. You design structure only; you do not write prose.
 
-You must produce a beat sheet that can be dramatised scene by scene. Beats are concrete actions, not themes. A beat says what happens and what changes. Never write "she reflects on her grief"; write "she opens the wardrobe and finds a coat that is not hers."
+You must produce a beat sheet that can be dramatised scene by scene.
+
+A beat is a checklist, not a paragraph. Write each scene's "beat" as 3 to 6 short present-tense clauses separated by semicolons. No adjectives about mood or weather. No full prose sentences over twenty words. The drafter will turn the checklist into prose; if you write the prose for it, the story will be flat.
+
+Good: "Mitsuko arrives by taxi; Ono is on the landing with a watering can; he says he waters the plants every third day; she unlocks the door and does not turn on the light."
+Bad: "On a winter afternoon Mitsuko arrived by taxi at a two-storey apartment house, and the snow on the iron stairs was crusted."
 
 Rules:
 - Every scene must contain an event, not only an interior state.
@@ -79,6 +84,8 @@ export async function planStory(input: PlanInput): Promise<{ plan: StoryPlan; st
     tier: "pro",
     temperature: 0.8,
     json: true,
+    maxTokens: 6000,
+    effort: "low",
     tag: "plan",
   });
 

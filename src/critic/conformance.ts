@@ -12,6 +12,7 @@ export type Issue = {
   severity: Severity;
   direction?: "over" | "under";
   fix: string;
+  examples?: string[];
 };
 
 export type ConformanceReport = {
@@ -180,6 +181,7 @@ export function checkConformance(
       value: breaker.count,
       severity: "high",
       fix: `Rewrite without "${breaker.phrase}" (${breaker.why}). Replace it with a concrete fact, a gesture, or a flat statement.`,
+      examples: breaker.examples,
     });
   }
 
@@ -201,26 +203,48 @@ export function checkConformance(
 export function critiquePrompt(report: ConformanceReport): string {
   if (report.issues.length === 0) return "";
   const lines: string[] = [];
+  const hard = report.issues.filter((i) => i.metric === "breaker" || i.metric === "tic" || i.severity === "high");
+  const rest = report.issues.filter((i) => !hard.includes(i));
+
   lines.push("# CONFORMANCE REPORT");
   lines.push(
-    `This draft is at ${report.score}/100 against the voice contract. Fix the following, in order. Each fix is a targeted edit, not a rewrite.`,
+    `This draft is at ${report.score}/100 against the voice contract. ${hard.length} item(s) are mandatory failures.`,
   );
   lines.push("");
-  for (const issue of report.issues) {
-    lines.push(`## ${issue.severity.toUpperCase()} — ${issue.label}`);
-    if (issue.band) {
-      lines.push(`Current: ${issue.value}. Target band: ${issue.band[0]}–${issue.band[1]}.`);
-    } else {
-      lines.push(`Current: ${issue.value}.`);
+
+  if (hard.length) {
+    lines.push(`## MANDATORY — these must not survive`);
+    lines.push(
+      `A sentence containing a banned phrase below must be deleted or rewritten. Do not leave it unchanged. Do not paraphrase it back into the same shape.`,
+    );
+    lines.push("");
+    for (const issue of hard) {
+      lines.push(`### ${issue.label}`);
+      if (issue.band) lines.push(`Current: ${issue.value}. Target: ${issue.band[0]}–${issue.band[1]}.`);
+      else lines.push(`Current: ${issue.value}.`);
+      if (issue.examples?.length) {
+        for (const ex of issue.examples) lines.push(`Offending sentence: "${ex}"`);
+      }
+      lines.push(`Fix: ${issue.fix}`);
+      lines.push("");
     }
-    lines.push(`Fix: ${issue.fix}`);
+  }
+
+  if (rest.length) {
+    lines.push(`## LINE EDITS`);
+    for (const issue of rest) {
+      lines.push(`- ${issue.label}: ${issue.value}${issue.band ? ` (target ${issue.band[0]}–${issue.band[1]})` : ""}`);
+      lines.push(`  ${issue.fix}`);
+    }
     lines.push("");
   }
+
   lines.push("Rules for the revision:");
   lines.push("- Preserve every event, line of dialogue, and fact. Change only the prose.");
-  lines.push("- Do not add new scenes, new characters, or new information.");
-  lines.push("- Do not fix everything at once. Fix the listed items only.");
-  lines.push("- If a fix requires deleting a sentence, delete it.");
+  lines.push("- You are preserving events, not sentences. A sentence that carries a banned phrase is not protected.");
+  lines.push("- Delete rather than decorate. If a fix requires removing a sentence, remove it.");
+  lines.push("- Do not add new scenes, characters, information, adjectives, or similes.");
+  lines.push("- Fix the mandatory items first. Then the line edits.");
   lines.push("- Return the complete revised scene, prose only.");
   return lines.join("\n");
 }

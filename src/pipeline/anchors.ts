@@ -13,8 +13,10 @@ export async function generateAnchors(args: {
   voice: EffectiveVoice;
   premise: string;
   count?: number;
+  characters?: Array<{ name: string; role: string; note: string }>;
 }): Promise<string[]> {
   const count = args.count ?? 3;
+  const cast = (args.characters ?? []).map((c) => `${c.name} (${c.role})`).join(", ");
   const res = await chat({
     messages: [
       {
@@ -27,15 +29,21 @@ export async function generateAnchors(args: {
         role: "user",
         content: [
           `Premise: ${args.premise}`,
+          cast ? `Use only these characters, and no other names: ${cast}.` : "",
           ``,
           `Write ${count} passages. Each must be a different kind of scene: one arrival, one conversation, one interval of waiting.`,
           `Each passage must be 150 to 220 words.`,
+          `These passages will be reused as fixed cadence anchors, so each must stand alone and must not depend on surrounding plot.`,
           `Do not resolve anything. End each on an object or a fact.`,
-        ].join("\n"),
+        ]
+          .filter(Boolean)
+          .join("\n"),
       },
     ],
-    tier: "pro",
+    tier: "flash",
     temperature: 0.95,
+    maxTokens: 3000,
+    effort: "low",
     tag: "anchors",
   });
 
@@ -43,6 +51,10 @@ export async function generateAnchors(args: {
     .split(/\n\s*---\s*\n/)
     .map((p) => cleanProse(p))
     .filter((p) => countWordsSafe(p) > 40);
+
+  if (parts.length === 0) {
+    throw new Error("Anchor generation returned no usable passages. Retry, or lower reasoning effort.");
+  }
 
   return parts.slice(0, count);
 }

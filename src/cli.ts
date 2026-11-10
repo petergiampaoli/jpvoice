@@ -419,6 +419,7 @@ program
       voice,
       premise: project.meta.premise,
       count: Number(opts.count),
+      characters: project.plan?.characters,
     });
 
     project.anchors = anchors;
@@ -695,7 +696,7 @@ program
 
     const { report } = scoreText(res.text, voice, detectNames(res.text));
     console.log("");
-    console.log(`  ${res.before} → ${res.after} words (target ${target}) · ${res.chunks} chunk(s)`);
+    console.log(`  ${res.before} → ${res.after} words (target ${target}) · ${res.calls} call(s)`);
     console.log(`  conformance ${verdictColor(report.pass, report.score)}`);
     console.log(`  ${pc.green(out)}`);
     console.log("");
@@ -838,17 +839,20 @@ program
   .action(async () => {
     const cfg = loadConfig();
     console.log("");
-    console.log(`  voices dir   ${voicesDir()}`);
+    console.log(`  provider     ${cfg.provider}`);
+    console.log(`  auth         ${cfg.mock ? pc.yellow("mock mode") : cfg.apiKey ? pc.green("ok") : pc.red("missing")}  ${pc.dim(cfg.authSource)}`);
     console.log(`  base url     ${cfg.baseUrl}`);
-    console.log(`  model flash  ${cfg.models.flash}`);
-    console.log(`  model pro    ${cfg.models.pro}`);
-    console.log(`  api key      ${cfg.mock ? pc.yellow("mock mode") : cfg.apiKey ? pc.green("set") : pc.red("missing")}`);
+    console.log(`  model flash  ${cfg.models.flash}   ${pc.dim(`$${cfg.pricing.flash.in}/$${cfg.pricing.flash.out} per M`)}`);
+    console.log(`  model pro    ${cfg.models.pro}   ${pc.dim(`$${cfg.pricing.pro.in}/$${cfg.pricing.pro.out} per M`)}`);
+    console.log(`  billing      ${cfg.peak ? pc.yellow("peak") : pc.green("off-peak")}`);
+    console.log(`  effort       flash=${cfg.effort.flash}  pro=${cfg.effort.pro}`);
+    console.log(`  polish tier  ${cfg.polishTier}`);
+    console.log(`  voices dir   ${voicesDir()}`);
     console.log(`  authors      ${loadAuthors().length}`);
     console.log(`  translators  ${loadTranslators().length}`);
     console.log(`  pairings     ${loadPairings().size}`);
     const sample = "The room was cold. She put the bag on the table.";
     console.log(`  pipeline     ${splitSentences(sample).length} sentences parsed from sample`);
-    void analyze;
     console.log("");
   });
 

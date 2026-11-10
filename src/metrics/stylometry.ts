@@ -50,7 +50,7 @@ export type Metrics = {
   concretePer1k: number;
   avgParagraphWords: number;
   tics: Record<string, number>;
-  breakers: Array<{ phrase: string; count: number; why: string }>;
+  breakers: Array<{ phrase: string; count: number; why: string; examples: string[] }>;
   detectedNames: string[];
 };
 
@@ -177,7 +177,14 @@ export function analyze(
           other.phrase.length > b.phrase.length &&
           other.phrase.toLowerCase().includes(b.phrase.toLowerCase()),
       ),
-  ).sort((a, b) => b.count - a.count);
+  ).sort((a, b) => b.count - a.count).map((b) => {
+    const examples: string[] = [];
+    for (const sentence of sentenceList) {
+      if (examples.length >= 2) break;
+      if (sentence.toLowerCase().includes(b.phrase.toLowerCase())) examples.push(sentence.trim());
+    }
+    return { ...b, examples };
+  });
 
   const per1k = (n: number) => (words > 0 ? round((n / words) * 1000, 2) : 0);
 

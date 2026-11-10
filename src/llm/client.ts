@@ -1,9 +1,13 @@
-import { appendFileSync } from "node:fs";
+import { appendFileSync, existsSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { dirname, join } from "node:path";
 import { loadConfig, requireKey, type Config } from "../config.js";
 import { countWords } from "../util/text.js";
 
 export type Role = "system" | "user" | "assistant";
 export type Msg = { role: Role; content: string };
+
+export type Effort = "low" | "medium" | "high" | "max";
 
 export type ChatOpts = {
   messages: Msg[];
@@ -13,6 +17,7 @@ export type ChatOpts = {
   maxTokens?: number;
   json?: boolean;
   tag?: string;
+  effort?: Effort;
 };
 
 export type ChatResult = {
@@ -44,10 +49,22 @@ function approxTokens(s: string): number {
   return Math.ceil(s.length / 3.6);
 }
 
+function projectLogPath(): string | null {
+  let dir = process.cwd();
+  for (let i = 0; i < 20; i++) {
+    if (existsSync(join(dir, ".jpvoice"))) return join(dir, ".jpvoice", "runs.jsonl");
+    const parent = dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return null;
+}
+
 function log(entry: Record<string, unknown>): void {
-  if (!logPath) return;
+  const target = logPath ?? projectLogPath();
+  if (!target) return;
   try {
-    appendFileSync(logPath, JSON.stringify(entry) + "\n");
+    appendFileSync(target, JSON.stringify(entry) + "\n");
   } catch {
     /* logging must never break a run */
   }
@@ -55,6 +72,29 @@ function log(entry: Record<string, unknown>): void {
 
 function backoff(attempt: number): number {
   return Math.min(20_000, 800 * 2 ** attempt + Math.random() * 400);
+}
+
+/**
+ * The OpenCode gateway routes and caches per conversation, so it wants a
+ * stable id. Deriving it from the working directory gives one session per
+ * story project for free.
+ */
+function sessionId(cfg: Config): string {
+  if (process.env.JPVOICE_SESSION) return process.env.JPVOICE_SESSION;
+  const digest = createHash("sha256").update(process.cwd()).digest("hex").slice(0, 24);
+  return `jpvoice-${digest}`;
+}
+
+function gatewayError(status: number, body: string): Error {
+  try {
+    const parsed = JSON.parse(body) as { error?: { message?: string; type?: string } };
+    if (parsed.error?.message) {
+      return new Error(`Model gateway ${status} (${parsed.error.type ?? "error"}): ${parsed.error.message}`);
+    }
+  } catch {
+    /* fall through */
+  }
+  return new Error(`Model gateway ${status}: ${body.slice(0, 600)}`);
 }
 
 async function sleep(ms: number): Promise<void> {
@@ -92,6 +132,7 @@ export async function chat(opts: ChatOpts): Promise<ChatResult> {
   }
 
   const key = requireKey(cfg);
+  const timeoutMs = Number(process.env.JPVOICE_TIMEOUT_MS ?? 240_000);
   const body: Record<string, unknown> = {
     model,
     messages: opts.messages,
@@ -101,40 +142,96 @@ export async function chat(opts: ChatOpts): Promise<ChatResult> {
   };
   if (opts.json) body.response_format = { type: "json_object" };
 
+  // Reasoning tokens are not bounded by max_tokens on every model, and an
+  // unbounded default can turn one scene into a five-minute request.
+  if (cfg.provider === "opencode") {
+    body.reasoning_effort = opts.effort ?? cfg.effort[tier];
+  } else if (process.env.JPVOICE_SEND_EFFORT === "1") {
+    body.reasoning_effort = opts.effort ?? cfg.effort[tier];
+  }
+
+  if (process.env.JPVOICE_DEBUG_BODY) {
+    try {
+      writeFileSync(process.env.JPVOICE_DEBUG_BODY, JSON.stringify(body, null, 2), "utf8");
+    } catch {
+      /* debug only */
+    }
+  }
+
   let lastError: Error | null = null;
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${key}`,
+    "User-Agent": cfg.userAgent,
+  };
+  if (cfg.provider === "opencode") {
+    headers["x-opencode-session"] = sessionId(cfg);
+  }
 
   for (let attempt = 0; attempt < 4; attempt++) {
     try {
+      if (process.env.JPVOICE_DEBUG) {
+        console.error(
+          `[jpvoice] POST ${cfg.baseUrl}/chat/completions model=${model} max_tokens=${String(body.max_tokens)} attempt=${attempt + 1} bytes=${JSON.stringify(body).length}`,
+        );
+      }
+      const startedRequest = Date.now();
       const res = await fetch(`${cfg.baseUrl}/chat/completions`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${key}`,
-        },
+        headers,
         body: JSON.stringify(body),
+        signal: AbortSignal.timeout(timeoutMs),
       });
+
+      if (process.env.JPVOICE_DEBUG) {
+        console.error(`[jpvoice] <- ${res.status} in ${Date.now() - startedRequest}ms`);
+      }
 
       if (res.status === 429 || res.status >= 500) {
         const text = await res.text();
-        lastError = new Error(`DeepSeek ${res.status}: ${text.slice(0, 400)}`);
+        lastError = gatewayError(res.status, text);
         await sleep(backoff(attempt));
         continue;
       }
 
       if (!res.ok) {
         const text = await res.text();
-        throw new Error(`DeepSeek ${res.status}: ${text.slice(0, 800)}`);
+        throw gatewayError(res.status, text);
       }
 
       const data = (await res.json()) as {
-        choices?: Array<{ message?: { content?: string } }>;
-        usage?: { prompt_tokens?: number; completion_tokens?: number };
+        choices?: Array<{
+          finish_reason?: string;
+          message?: { content?: string; reasoning_content?: string };
+        }>;
+        usage?: {
+          prompt_tokens?: number;
+          completion_tokens?: number;
+          completion_tokens_details?: { reasoning_tokens?: number };
+          opencode?: { allowance?: number; billing_source?: string; list_cost?: number };
+        };
+        error?: { message?: string; type?: string };
       };
+
+      if (data.error?.message) {
+        throw new Error(`Model gateway error (${data.error.type ?? "error"}): ${data.error.message}`);
+      }
+
       const text = data.choices?.[0]?.message?.content ?? "";
+      const finish = data.choices?.[0]?.finish_reason;
+      if (!text.trim() && finish === "length") {
+        throw new Error(
+          `The model used its entire ${String(body.max_tokens)}-token budget on reasoning and returned no text. Lower reasoning effort (JPVOICE_EFFORT_FLASH=low) or raise max tokens.`,
+        );
+      }
       const inputTokens = data.usage?.prompt_tokens ?? approxTokens(opts.messages.map((m) => m.content).join("\n"));
       const outputTokens = data.usage?.completion_tokens ?? approxTokens(text);
       const price = cfg.pricing[tier];
-      const costUsd = (inputTokens / 1e6) * price.in + (outputTokens / 1e6) * price.out;
+      const estimated = (inputTokens / 1e6) * price.in + (outputTokens / 1e6) * price.out;
+      // The gateway reports what the request actually cost the plan.
+      const allowance = data.usage?.opencode?.allowance;
+      const costUsd = typeof allowance === "number" && allowance > 0 ? allowance : estimated;
       sessionCost += costUsd;
 
       log({
@@ -142,9 +239,13 @@ export async function chat(opts: ChatOpts): Promise<ChatResult> {
         tag: opts.tag ?? "chat",
         model,
         tier,
+        provider: cfg.provider,
         inputTokens,
         outputTokens,
+        reasoningTokens: data.usage?.completion_tokens_details?.reasoning_tokens ?? 0,
         costUsd,
+        billing: data.usage?.opencode?.billing_source ?? "unknown",
+        peak: cfg.peak,
         ms: Date.now() - started,
       });
 
@@ -159,12 +260,17 @@ export async function chat(opts: ChatOpts): Promise<ChatResult> {
       };
     } catch (err) {
       lastError = err instanceof Error ? err : new Error(String(err));
+      if (lastError.name === "TimeoutError" || /aborted/i.test(lastError.message)) {
+        lastError = new Error(
+          `Request exceeded ${Math.round(timeoutMs / 1000)}s. Lower the scene budget, raise JPVOICE_TIMEOUT_MS, or switch the pass to a faster model.`,
+        );
+      }
       if (attempt === 3) break;
       await sleep(backoff(attempt));
     }
   }
 
-  throw lastError ?? new Error("DeepSeek request failed");
+  throw lastError ?? new Error("Model request failed");
 }
 
 /** Extract the first JSON object or array from a model response. */

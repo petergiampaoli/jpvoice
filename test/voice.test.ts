@@ -31,6 +31,16 @@ test("structureFor a novella scales by scenes, not by lengthening them", () => {
   assert.ok(s.totalScenes >= 15, `expected many scenes, got ${s.totalScenes}`);
 });
 
+test("structureFor never creates an empty chapter", () => {
+  const short = loadForms().find((f) => f.id === "short")!;
+  for (const total of [1200, 1600, 2000, 3000, 5000, 6000]) {
+    const s = structureFor(total, short);
+    assert.equal(s.chapters.length, Math.min(s.chapters.length, s.totalScenes));
+    assert.ok(s.chapters.every((c) => c.sceneCount >= 1), `empty chapter at ${total} words`);
+    assert.ok(s.chapters.every((c) => c.budgets.length === c.sceneCount));
+  }
+});
+
 test("structureFor a flash piece is a single scene", () => {
   const flash = loadForms().find((f) => f.id === "flash")!;
   const s = structureFor(900, flash);

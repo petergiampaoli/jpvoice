@@ -57,9 +57,11 @@ export async function extractBible(text: string): Promise<Bible> {
         ].join("\n"),
       },
     ],
-    tier: "pro",
+    tier: "flash",
     temperature: 0.2,
     json: true,
+    maxTokens: 3000,
+    effort: "low",
     tag: "bible",
   });
 
@@ -132,6 +134,7 @@ export async function revoiceText(args: {
       ],
       tier: "flash",
       temperature: args.mode === "polish" ? 0.4 : 0.9,
+      maxTokens: Math.min(8000, Math.round(target * 2.2) + 1500),
       tag: "revoice",
     });
 
@@ -187,6 +190,7 @@ export async function continueText(args: {
     ],
     tier: "flash",
     temperature: 0.95,
+    maxTokens: Math.min(8000, Math.round(args.words * 2.2) + 1500),
     tag: "extend",
   });
   return cleanProse(res.text);

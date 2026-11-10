@@ -1,6 +1,7 @@
 import { chat } from "../llm/client.js";
 import { buildContext } from "./context.js";
 import { cleanProse, countWordsSafe } from "./score.js";
+import { rescaleText } from "./expand.js";
 import type { Project } from "../store/project.js";
 import { readScene, saveProject, writeScene } from "../store/project.js";
 import type { EffectiveVoice } from "../voice/schema.js";
@@ -80,11 +81,32 @@ export async function draftScene(args: {
     ],
     tier: "flash",
     temperature: args.temperature ?? 0.95,
+    maxTokens: Math.min(8000, Math.round(scene.targetWords * 2.2) + 1800),
     tag: "draft",
   });
 
   const text = cleanProse(res.text);
-  const words = countWordsSafe(text);
+  let words = countWordsSafe(text);
+
+  // Scenes routinely come in 10-15% short. Correct once, using the register's
+  // own expansion moves, rather than letting the budget drift across a book.
+  const deviation = Math.abs(words - scene.targetWords) / Math.max(1, scene.targetWords);
+  if (deviation > 0.12) {
+    try {
+      const fixed = await rescaleText({ text, voice, toWords: scene.targetWords, chunkWords: 700 });
+      if (Math.abs(fixed.after - scene.targetWords) < Math.abs(words - scene.targetWords)) {
+        writeScene(workDir, sceneId, fixed.text);
+        scene.words = fixed.after;
+        scene.status = "drafted";
+        scene.passes = 0;
+        scene.updatedAt = new Date().toISOString();
+        saveProject(workDir, project);
+        return { words: fixed.after, text: fixed.text, skipped: false };
+      }
+    } catch {
+      /* keep the original draft if the correction fails */
+    }
+  }
 
   writeScene(workDir, sceneId, text);
   scene.words = words;
