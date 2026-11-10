@@ -163,10 +163,21 @@ export function analyze(
     tics[phrase] = words > 0 ? round(pct(countPhrase(plain, phrase), words) * 10, 3) : 0;
   }
 
-  const breakers = REGISTER_BREAKERS
+  const rawBreakers = REGISTER_BREAKERS
     .map((b) => ({ ...b, count: countPhrase(plain, b.phrase) }))
-    .filter((b) => b.count > 0)
-    .sort((a, b) => b.count - a.count);
+    .filter((b) => b.count > 0);
+
+  // Suppress overlapping phrases: "chill ran down" is already inside
+  // "a chill ran down". Count the longer match once.
+  const breakers = rawBreakers.filter(
+    (b) =>
+      !rawBreakers.some(
+        (other) =>
+          other !== b &&
+          other.phrase.length > b.phrase.length &&
+          other.phrase.toLowerCase().includes(b.phrase.toLowerCase()),
+      ),
+  ).sort((a, b) => b.count - a.count);
 
   const per1k = (n: number) => (words > 0 ? round((n / words) * 1000, 2) : 0);
 

@@ -11,9 +11,9 @@ It writes from a premise, and it re-voices text you already have. It holds a reg
   short (≤8w)         36%               37%                 34–54%
   similes /1k         8.2               0                   0–4
   em dashes /1k       12.3              3.73                0–1.5
-  register breakers   6                 0                   0
+  register breakers   10                0                   0
   --------------------------------------------------------------------
-  conformance         18/100            81/100
+  conformance         0/100             81/100
 ```
 
 ## The idea

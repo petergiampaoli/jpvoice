@@ -48,6 +48,13 @@ test("tic rates are per thousand words", () => {
   assert.ok(Math.abs((m.tics["for a while"] ?? 0) - expected) < 0.01);
 });
 
+test("overlapping breaker phrases are counted once", () => {
+  const m = analyze("A chill ran down her spine.");
+  const phrases = m.breakers.map((b) => b.phrase);
+  assert.ok(phrases.includes("a chill ran down"));
+  assert.ok(!phrases.includes("chill ran down"), "shorter overlapping phrase should be suppressed");
+});
+
 test("dialogue ratio measures words inside quotes", () => {
   const m = analyze('"I am sorry," she said. "Is that so?" He nodded. "Yes."');
   assert.ok(m.dialogueRatio > 0.4);
