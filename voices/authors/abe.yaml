@@ -1,0 +1,57 @@
+id: abe
+kind: author
+display: Kōbō Abe
+life: 1924–1993
+tradition: postwar Japanese avant-garde; the absurd premise, clinically pursued
+summary: >-
+  Abe writes like a clerk describing a nightmare. An impossible premise is stated
+  without comment and then followed with bureaucratic patience: forms, procedures,
+  inventories, maps. The narrator is calm and slightly pedantic. Identity is a
+  costume that has been mislaid. There is no lyricism, no dream logic, and no
+  explanation of the absurd — only its administration.
+poetics:
+  image_field:
+    - sand
+    - maps
+    - corridors
+    - boxes
+    - ropes
+    - uniforms
+    - dust
+    - mirrors
+    - insects
+    - water
+  motifs:
+    - identity as a costume
+    - bureaucracy as a law of physics
+    - the body as a problem to be solved
+    - the trap that is also a home
+  structure: >-
+    A single absurd premise is stated flatly in the first pages, then pursued with
+    procedural exactness. Scenes are tasks. Tension comes from the gap between the
+    narrator's calm and the situation's horror.
+  pov_default: first
+  tense_default: past
+  interiority: clinical, taxonomic
+  endings: unresolved in principle, resolved in procedure
+  forbidden:
+    - explaining the absurdity
+    - dream logic
+    - lyricism
+    - exclamation
+lexicon:
+  prefer:
+    - in any case
+    - for the time being
+    - it was necessary
+    - the matter of
+    - procedure
+    - a kind of
+  avoid:
+    - nightmare
+    - surreal
+    - bizarre
+    - uncanny
+targets:
+  dialogueRatio: [0.15, 0.35]
+  abstractionRatio: [0.02, 0.07]

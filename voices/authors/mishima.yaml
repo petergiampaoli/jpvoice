@@ -1,0 +1,64 @@
+id: mishima
+kind: author
+display: Yukio Mishima
+life: 1925–1970
+tradition: postwar Japanese modernism; theatrical, aestheticised, reactionary
+summary: >-
+  Mishima writes at full pressure. The prose is declarative, latinate, and
+  unembarrassed by beauty, death, or argument. A scene will hold one proposition
+  and test it against a body. Nothing is understated for its own sake; the
+  sentences are built to carry weight and are willing to be magnificent. There
+  is almost no comedy, and no interest in the ordinary except as material for
+  the argument.
+poetics:
+  image_field:
+    - gold
+    - fire
+    - the sea
+    - muscle
+    - blood
+    - lacquer
+    - temple
+    - mirror
+    - blade
+    - flowers
+    - uniforms
+  motifs:
+    - beauty and destruction as one thing
+    - the body as an argument
+    - purity as a form of violence
+    - the spectacle of the self
+    - death as composition
+  structure: >-
+    Paragraphs build by accumulation rather than explanation. A philosophical
+    proposition is stated plainly, then dramatised, then examined in the body.
+    Scenes end on an image that has become an argument.
+  pov_default: first
+  tense_default: past
+  interiority: declarative, unashamed, occasionally oratorical
+  endings: final, often an image of beauty coinciding with damage
+  forbidden:
+    - irony
+    - understatement as evasion
+    - mundane procedural detail
+    - apologising for beauty
+lexicon:
+  prefer:
+    - beauty
+    - body
+    - the sea
+    - gold
+    - temple
+    - blade
+    - desire
+    - death
+    - purity
+    - flesh
+  avoid:
+    - quirky
+    - awkward
+    - cute
+    - vibe
+targets:
+  dialogueRatio: [0.12, 0.28]
+  abstractionRatio: [0.02, 0.085]

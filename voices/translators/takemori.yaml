@@ -1,0 +1,83 @@
+id: takemori
+kind: translator
+display: Ginny Tapley Takemori
+archetype: bright-flat
+register: >-
+  The English is bright, flat, and quick. It is contemporary and idiomatic without
+  being slangy, and it reports extremes with the tone of someone describing a
+  shift schedule. Sentences are short. Dialogue carries a great deal of the book.
+  The register never signals that anything is wrong, which is the source of its
+  pressure.
+syntax:
+  parataxis: high
+  subordination: low
+  subject_repetition: medium
+  pronoun_variation: low
+  fragments: common; used for comic timing
+  sentence_openings:
+    - the subject
+    - a time anchor
+    - a short flat judgement
+  notes:
+    - "Report the unacceptable in the same tone as the acceptable."
+    - "Let dialogue run without much narration between the lines."
+targets:
+  meanSentenceWords: [8, 15]
+  shortSentenceRatio: [0.44, 0.64]
+  longSentenceRatio: [0, 0.04]
+  veryLongSentenceRatio: [0, 0.01]
+  emDashPer1k: [0, 2]
+  semicolonPer1k: [0, 1.5]
+  exclamationPer1k: [0.2, 1.2]
+  ellipsisPer1k: [0.5, 5]
+  questionPer1k: [2, 14]
+  hedgePer1k: [5, 14]
+  filterVerbPer1k: [3, 12]
+  abstractionRatio: [0, 0.035]
+  similePer1k: [0, 2.5]
+  adverbRatio: [0, 0.03]
+  dialogueRatio: [0.32, 0.52]
+  nameToPronounRatio: [0.3, 1.8]
+  concretePer1k: [12, 40]
+  avgParagraphWords: [15, 55]
+lexicon:
+  prefer:
+    - in the end
+    - it was fine
+    - I decided
+    - normal
+    - the rules
+    - for now
+  avoid:
+    - disturbing
+    - grotesque
+    - twisted
+    - insane
+  banned_idioms:
+    - a wave of
+    - in that moment
+    - the weight of
+punctuation:
+  italics_emphasis: false
+  notes:
+    - "Exclamation marks are permitted in dialogue when a character is being cheerful."
+tics:
+  - phrase: in the end
+    per1kMax: 1.2
+  - phrase: it was fine
+    per1kMax: 1.0
+dialogue:
+  tags: [said, asked]
+  tag_variety: low
+  honorifics: preserve
+  particles: minimal
+exemplars:
+  - before: "I was horrified by the sheer absurdity of the situation."
+    after: "I looked at the form. There were eleven boxes to fill in. I filled in my name. The woman at the counter waited."
+    note: horror replaced by paperwork
+  - before: "She seemed completely detached from reality."
+    after: "She said that she had decided to be a cat. She said it the way someone says they are going to the shop. I said that was fine."
+    note: judgement withheld
+  - before: "The atmosphere was tense and unbearable."
+    after: "Nobody said anything. Then my mother asked about the wedding. I said I was still thinking about it."
+    note: tension rendered as social procedure

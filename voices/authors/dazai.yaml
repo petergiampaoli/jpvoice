@@ -1,0 +1,55 @@
+id: dazai
+kind: author
+display: Osamu Dazai
+life: 1909–1948
+tradition: postwar Japanese confession; the I-novel pushed to performance
+summary: >-
+  Dazai's narrators talk directly to you and confess without dignity. The voice is
+  conversational, self-mocking, and exhausted. Shame is treated as comedy and as
+  evidence. The narrator explains the trick he is playing and then keeps playing
+  it. Sentences are plain and a little loose; the intelligence shows in the
+  timing, not in the vocabulary.
+poetics:
+  image_field:
+    - sake
+    - cigarettes
+    - mirrors
+    - bandages
+    - snow
+    - cheap rooms
+    - trains
+    - medicine
+    - women's hands
+  motifs:
+    - self-disqualification
+    - the performance of normality
+    - the comedy of shame
+    - dependence on women
+    - the failure to want to live properly
+  structure: >-
+    Episodic confession. The narrator addresses the reader, admits the
+    performance, and continues. Scenes are anecdotes with a punchline that is not
+    funny.
+  pov_default: first
+  tense_default: past
+  interiority: total, self-lacerating, conversational
+  endings: abrupt, deflating
+  forbidden:
+    - literary polish that hides the speaker
+    - third-person distance
+    - moral improvement
+lexicon:
+  prefer:
+    - I am sorry
+    - in any case
+    - after all
+    - somehow
+    - ridiculous
+    - ashamed
+  avoid:
+    - exquisite
+    - luminous
+    - profound
+targets:
+  dialogueRatio: [0.25, 0.45]
+  abstractionRatio: [0.015, 0.06]

@@ -1,0 +1,85 @@
+id: saunders
+kind: translator
+display: E. Dale Saunders
+archetype: clinical-procedural
+register: >-
+  The English is exact, restrained, and slightly pedantic. It reports. The
+  vocabulary is plain, the sentences are complete, and the affect is almost
+  entirely withheld. Absurdity is described in the tone of a maintenance manual.
+  There is very little simile, and almost no lyricism.
+syntax:
+  parataxis: medium
+  subordination: low
+  subject_repetition: high
+  pronoun_variation: low
+  fragments: rare; permitted for a single procedural fact
+  sentence_openings:
+    - the subject
+    - a procedural phrase
+    - a time anchor
+  notes:
+    - "Prefer the procedural verb: noted, recorded, examined, placed, decided."
+    - "Do not signal that anything is strange. Report it."
+targets:
+  meanSentenceWords: [14, 22]
+  shortSentenceRatio: [0.26, 0.44]
+  longSentenceRatio: [0.01, 0.09]
+  veryLongSentenceRatio: [0, 0.02]
+  emDashPer1k: [0, 1.5]
+  semicolonPer1k: [0, 4]
+  exclamationPer1k: [0, 0.2]
+  ellipsisPer1k: [0, 4]
+  questionPer1k: [0, 8]
+  hedgePer1k: [3, 10]
+  filterVerbPer1k: [4, 14]
+  abstractionRatio: [0.01, 0.07]
+  similePer1k: [0, 2.5]
+  adverbRatio: [0, 0.03]
+  dialogueRatio: [0.10, 0.30]
+  nameToPronounRatio: [0.5, 2.2]
+  concretePer1k: [9, 30]
+  avgParagraphWords: [35, 95]
+lexicon:
+  prefer:
+    - in any case
+    - for the time being
+    - it was necessary
+    - the matter of
+    - procedure
+    - noted
+    - in this way
+  avoid:
+    - nightmare
+    - surreal
+    - bizarre
+    - uncanny
+    - overwhelming
+  banned_idioms:
+    - a wave of
+    - in that moment
+    - time seemed to slow
+    - the weight of
+punctuation:
+  italics_emphasis: false
+  notes:
+    - "No exclamation marks, including in dialogue."
+tics:
+  - phrase: in any case
+    per1kMax: 1.4
+  - phrase: for the time being
+    per1kMax: 1.2
+dialogue:
+  tags: [said]
+  tag_variety: none
+  honorifics: preserve
+  particles: render as a full stop; no ellipsis in dialogue
+exemplars:
+  - before: "The situation was surreal and I felt utterly disoriented."
+    after: "I could not identify the room. There were three doors, and all of them were locked. I noted this and sat down on the floor."
+    note: disorientation replaced by inventory
+  - before: "A sense of dread crept over me."
+    after: "The water had stopped. I waited. Nothing happened, and I continued to wait."
+    note: dread replaced by procedure
+  - before: "She looked at me with an expression I couldn't read."
+    after: "She looked at me. Her face did not change. I could not determine what she was thinking."
+    note: interpretation refused

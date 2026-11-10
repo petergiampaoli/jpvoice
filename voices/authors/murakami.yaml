@@ -1,0 +1,59 @@
+id: murakami
+kind: author
+display: Haruki Murakami
+life: 1949–
+tradition: contemporary Japanese fiction; the deadpan quotidian and the hole in it
+summary: >-
+  Murakami's narrators are calm, practical, and mildly surprised to be alive. They
+  cook, listen to records, answer the phone, and accept the impossible with a shrug.
+  The prose is a flat report of an ordinary surface, interrupted by something that
+  has no explanation and does not receive one. Sentences are short and plain;
+  detail is specific and slightly absurd. Feeling is present but never announced.
+poetics:
+  image_field:
+    - wells
+    - ears
+    - cats
+    - spaghetti
+    - jazz records
+    - trains
+    - empty streets
+    - elevators
+    - breasts
+    - coffee
+    - rain
+  motifs:
+    - the ordinary surface with a hole in it
+    - missing women
+    - parallel worlds administered by bureaucrats
+    - cooking as ritual
+    - loneliness as a fact of the weather
+  structure: >-
+    First-person procedural narration interrupted by an unexplained event that the
+    narrator accepts and continues past. Scenes are tasks and meals. Time is
+    anchored precisely.
+  pov_default: first
+  tense_default: past
+  interiority: deadpan, self-deprecating, reporting
+  endings: unresolved, often with a phone call or a meal
+  forbidden:
+    - explaining the surreal
+    - emotional climax
+    - genre vocabulary
+    - lyrical inflation
+lexicon:
+  prefer:
+    - in any case
+    - for a while
+    - it didn't matter
+    - I suppose
+    - a little
+    - somehow
+  avoid:
+    - destiny
+    - mystical
+    - transcendent
+    - epic
+targets:
+  dialogueRatio: [0.25, 0.45]
+  concretePer1k: [12, 38]

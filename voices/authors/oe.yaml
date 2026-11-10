@@ -1,0 +1,56 @@
+id: oe
+kind: author
+display: Kenzaburō Ōe
+life: 1935–2023
+tradition: postwar Japanese fiction; the periphery, the damaged child, the mythic village
+summary: >-
+  Ōe writes from the periphery, at speed, with the body and the village both
+  insisting on their claims. Sentences push forward by apposition, piling clause
+  onto clause. The prose is argumentative, sometimes ugly, and refuses to look
+  away. Shame, endurance, and the damaged child are recurring obligations. There
+  is no decorative beauty; there is a great deal of weather, mud, and insistence.
+poetics:
+  image_field:
+    - forest
+    - mud
+    - rain
+    - animals
+    - milk
+    - wounds
+    - maps
+    - roots
+    - excrement
+    - snow
+  motifs:
+    - the damaged child
+    - the village as conscience
+    - shame and endurance
+    - myth as memory
+    - the body as evidence
+  structure: >-
+    Sentences push forward by apposition; paragraphs hold several registers at
+    once. A scene will begin in the ordinary and end inside a myth it has not
+    announced.
+  pov_default: first
+  tense_default: past
+  interiority: insistent, argumentative
+  endings: unresolved but morally weighed
+  forbidden:
+    - tidy resolution
+    - decorative beauty
+    - detached irony
+lexicon:
+  prefer:
+    - nevertheless
+    - after all
+    - the fact was
+    - I told myself
+    - endurance
+    - the village
+  avoid:
+    - elegant
+    - delicate
+    - charming
+targets:
+  dialogueRatio: [0.12, 0.30]
+  abstractionRatio: [0.025, 0.085]

@@ -1,0 +1,82 @@
+id: bett-boyd
+kind: translator
+display: Sam Bett & David Boyd
+archetype: precise-cool
+register: >-
+  The English is precise, cool, and contemporary. It is exact about money, bodies,
+  and time, and it does not editorialise. Sentences are short and clean, with a
+  slight hardness at the edges. Dialogue is blunt. The register allows the ugly
+  fact to stand without a compensating image.
+syntax:
+  parataxis: high
+  subordination: low
+  subject_repetition: medium
+  pronoun_variation: low
+  fragments: occasional; used for a hard fact
+  sentence_openings:
+    - the subject
+    - a number or time
+    - a short flat statement
+  notes:
+    - "Give the specific fact: the amount, the hour, the part of the body."
+    - "Do not soften a sentence with an adjective it does not need."
+targets:
+  meanSentenceWords: [9, 16]
+  shortSentenceRatio: [0.40, 0.60]
+  longSentenceRatio: [0, 0.05]
+  veryLongSentenceRatio: [0, 0.01]
+  emDashPer1k: [0, 2.5]
+  semicolonPer1k: [0, 2]
+  exclamationPer1k: [0, 0.5]
+  ellipsisPer1k: [0.5, 6]
+  questionPer1k: [1, 12]
+  hedgePer1k: [4, 13]
+  filterVerbPer1k: [4, 15]
+  abstractionRatio: [0, 0.04]
+  similePer1k: [0, 2]
+  adverbRatio: [0, 0.03]
+  dialogueRatio: [0.30, 0.50]
+  nameToPronounRatio: [0.35, 1.9]
+  concretePer1k: [14, 42]
+  avgParagraphWords: [18, 60]
+lexicon:
+  prefer:
+    - in the end
+    - I said
+    - it didn't matter
+    - a little
+    - the money
+    - for a moment
+  avoid:
+    - luminous
+    - exquisite
+    - transcendent
+  banned_idioms:
+    - a wave of
+    - in that moment
+    - the weight of
+    - time seemed to slow
+punctuation:
+  italics_emphasis: false
+  notes:
+    - "Keep punctuation minimal. A full stop is almost always better than a dash."
+tics:
+  - phrase: in the end
+    per1kMax: 1.2
+  - phrase: a little
+    per1kMax: 1.6
+dialogue:
+  tags: [said]
+  tag_variety: none
+  honorifics: preserve
+  particles: minimal
+exemplars:
+  - before: "An inexplicable sadness welled up inside her."
+    after: "She looked at the receipt. It was for 340 yen. She put it in her pocket and went outside."
+    note: sadness replaced by an amount
+  - before: "The apartment felt suffocatingly small."
+    after: "The apartment was eighteen square metres. The window faced a wall. She had lived there for two years."
+    note: feeling replaced by measurements
+  - before: "He looked at her with undisguised contempt."
+    after: "He looked at her. He did not say anything. Then he asked how much it cost."
+    note: judgement replaced by a question

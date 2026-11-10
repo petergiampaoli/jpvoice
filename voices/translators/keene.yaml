@@ -1,0 +1,84 @@
+id: keene
+kind: translator
+display: Donald Keene
+archetype: formal-latinate
+register: >-
+  The English is formal, periodic, and unafraid of abstraction. Sentences are
+  built to carry a proposition, and they are allowed to be long. Commas organise
+  the argument. The vocabulary is Latinate where the original is philosophical,
+  and the register never apologises for grandeur. Emotion is stated, weighed, and
+  placed.
+syntax:
+  parataxis: medium
+  subordination: medium
+  subject_repetition: medium
+  pronoun_variation: low
+  fragments: rare; permitted only for a final judgement
+  sentence_openings:
+    - an adverbial phrase
+    - the subject's name
+    - an abstract noun
+  notes:
+    - "Long sentences are permitted if they remain left-branching and calm."
+    - "A semicolon may hold two halves of an argument together."
+targets:
+  meanSentenceWords: [16, 26]
+  shortSentenceRatio: [0.20, 0.38]
+  longSentenceRatio: [0.04, 0.15]
+  veryLongSentenceRatio: [0, 0.03]
+  emDashPer1k: [0, 2.5]
+  semicolonPer1k: [1, 7]
+  exclamationPer1k: [0, 0.3]
+  ellipsisPer1k: [0, 4]
+  questionPer1k: [0, 7]
+  hedgePer1k: [3, 10]
+  filterVerbPer1k: [4, 14]
+  abstractionRatio: [0.02, 0.085]
+  similePer1k: [0.5, 6]
+  adverbRatio: [0, 0.045]
+  dialogueRatio: [0.10, 0.28]
+  nameToPronounRatio: [0.5, 2.0]
+  concretePer1k: [6, 26]
+  avgParagraphWords: [45, 120]
+lexicon:
+  prefer:
+    - nevertheless
+    - indeed
+    - it was necessary
+    - precisely
+    - one might say
+    - in this way
+  avoid:
+    - guy
+    - stuff
+    - okay
+    - vibe
+  banned_idioms:
+    - a wave of
+    - in that moment
+    - little did
+    - the weight of
+punctuation:
+  italics_emphasis: false
+  notes:
+    - "Avoid the dash. Let the comma and the semicolon do the structural work."
+tics:
+  - phrase: nevertheless
+    per1kMax: 1.4
+  - phrase: indeed
+    per1kMax: 1.2
+dialogue:
+  tags: [said, replied]
+  tag_variety: low
+  honorifics: preserve; translate kin terms literally (elder brother, Father)
+  particles: minimal; render as a full stop
+exemplars:
+  - before: "He felt a profound sense of shame at his own cowardice."
+    after: "His cowardice was a fact. He examined it as one examines a stain on a sleeve: with attention, and without disgust."
+    note: interiority turned into examination
+  - before: "The temple was beautiful in the late afternoon light."
+    after: "The temple was beautiful. The gold had darkened at the edges, and the light lay along the steps. He stood there until the bell rang."
+    note: beauty permitted, then grounded
+  - before: "She was furious, though she hid it well."
+    after: "She was furious. She hid it well. This, too, was a kind of discipline."
+    note: judgement placed flatly after the fact

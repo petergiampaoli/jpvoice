@@ -1,0 +1,82 @@
+id: carpenter
+kind: translator
+display: Juliet Winters Carpenter
+archetype: plain-transparent
+register: >-
+  The English is plain, warm, and direct. It trusts the sentence to be understood
+  and does not decorate. Dialogue sounds like people speaking, but it keeps a
+  faint formality that marks it as translated. The register is modern, with very
+  little period texture, and it is unafraid of the flat admission.
+syntax:
+  parataxis: high
+  subordination: low
+  subject_repetition: high
+  pronoun_variation: low
+  fragments: occasional, for a flat admission
+  sentence_openings:
+    - the subject
+    - a time anchor
+    - a short plain phrase
+  notes:
+    - "Plainness is the effect. Do not reach for a better word when the first one is accurate."
+    - "Let dialogue be slightly more polite than an English speaker would be."
+targets:
+  meanSentenceWords: [10, 17]
+  shortSentenceRatio: [0.36, 0.56]
+  longSentenceRatio: [0, 0.06]
+  veryLongSentenceRatio: [0, 0.01]
+  emDashPer1k: [0, 1.5]
+  semicolonPer1k: [0, 2]
+  exclamationPer1k: [0, 0.4]
+  ellipsisPer1k: [1, 7]
+  questionPer1k: [1, 12]
+  hedgePer1k: [6, 16]
+  filterVerbPer1k: [6, 18]
+  abstractionRatio: [0, 0.05]
+  similePer1k: [0, 3]
+  adverbRatio: [0, 0.035]
+  dialogueRatio: [0.26, 0.46]
+  nameToPronounRatio: [0.55, 2.4]
+  concretePer1k: [10, 34]
+  avgParagraphWords: [25, 75]
+lexicon:
+  prefer:
+    - in any case
+    - after all
+    - a little
+    - for a while
+    - I am sorry
+    - somehow
+  avoid:
+    - exquisite
+    - luminous
+    - profound
+  banned_idioms:
+    - a wave of
+    - the weight of
+    - could not help but
+    - before he knew it
+punctuation:
+  italics_emphasis: false
+  notes:
+    - "Prefer the full stop to the dash."
+tics:
+  - phrase: a little
+    per1kMax: 1.8
+  - phrase: after all
+    per1kMax: 1.2
+dialogue:
+  tags: [said]
+  tag_variety: none
+  honorifics: preserve
+  particles: trailing ellipsis, minimal
+exemplars:
+  - before: "I was consumed by self-loathing and couldn't bring myself to look at her."
+    after: "I hated myself. I looked at the floor. In any case, I could not look at her face."
+    note: confession kept plain
+  - before: "She seemed to be on the verge of tears."
+    after: "Her eyes were wet. She said it was nothing. I said I was sorry."
+    note: interpretation replaced by speech
+  - before: "He felt an inexplicable sadness."
+    after: "He was sad. He did not know why. He drank the rest of the tea."
+    note: flat admission, then an object

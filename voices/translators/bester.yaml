@@ -1,0 +1,83 @@
+id: bester
+kind: translator
+display: John Bester
+archetype: formal-periodic
+register: >-
+  The English is formal, British-inflected, and built from long periodic sentences.
+  Subordinate clauses are allowed to gather before the main clause arrives. The
+  vocabulary is Latinate, the semicolons are real, and the register is
+  unembarrassed by moral weight. It is the most architectural of these registers
+  and the least conversational.
+syntax:
+  parataxis: low
+  subordination: high
+  subject_repetition: medium
+  pronoun_variation: low
+  fragments: very rare; only as a final verdict
+  sentence_openings:
+    - a subordinate clause
+    - an adverbial phrase
+    - the subject's name
+  notes:
+    - "Permit the left-branching sentence. Let the predicate arrive late."
+    - "The paragraph may be a single long sentence."
+targets:
+  meanSentenceWords: [19, 31]
+  shortSentenceRatio: [0.14, 0.32]
+  longSentenceRatio: [0.07, 0.20]
+  veryLongSentenceRatio: [0.01, 0.05]
+  emDashPer1k: [0, 2.5]
+  semicolonPer1k: [2, 9]
+  exclamationPer1k: [0, 0.3]
+  ellipsisPer1k: [0, 3]
+  questionPer1k: [0, 7]
+  hedgePer1k: [2, 9]
+  filterVerbPer1k: [3, 12]
+  abstractionRatio: [0.03, 0.10]
+  similePer1k: [0.5, 5]
+  adverbRatio: [0, 0.05]
+  dialogueRatio: [0.08, 0.24]
+  nameToPronounRatio: [0.45, 2.0]
+  concretePer1k: [6, 24]
+  avgParagraphWords: [60, 150]
+lexicon:
+  prefer:
+    - nevertheless
+    - moreover
+    - indeed
+    - it was as though
+    - in this way
+    - precisely
+  avoid:
+    - guy
+    - stuff
+    - okay
+    - vibe
+  banned_idioms:
+    - in that moment
+    - little did
+    - time seemed to slow
+punctuation:
+  italics_emphasis: false
+  notes:
+    - "Semicolons are permitted and encouraged between balanced clauses."
+tics:
+  - phrase: nevertheless
+    per1kMax: 1.4
+  - phrase: it was as though
+    per1kMax: 1.2
+dialogue:
+  tags: [said, replied, observed]
+  tag_variety: low
+  honorifics: preserve; kin terms literal
+  particles: minimal
+exemplars:
+  - before: "The village seemed to breathe with an ancient malevolence."
+    after: "The village was quiet; the rain had stopped during the night, and the road was mud, and the people in the village had known him since he was a child."
+    note: semicolon holds the accumulation
+  - before: "He was overwhelmed by a sense of his own failure."
+    after: "That he had failed was not in question; what remained in question was whether the failure belonged to him alone, or to the house, or to the road, or to the village that had raised him."
+    note: abstraction given architectural weight
+  - before: "She didn't answer."
+    after: "She did not answer, and in her not answering there was something that he had learned, over the years, to recognise."
+    note: silence given a clause

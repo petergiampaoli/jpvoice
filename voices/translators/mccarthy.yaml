@@ -1,0 +1,83 @@
+id: mccarthy
+kind: translator
+display: Ralph McCarthy
+archetype: clean-contemporary
+register: >-
+  The English is clean, flexible, and contemporary without being slangy. It moves
+  between dialogue and narration easily and is willing to be funny. Sentences are
+  mid-length, commas are used generously, and the register never strains for
+  beauty. Where the original is odd, the oddness is kept but the syntax is
+  smoothed just enough to read.
+syntax:
+  parataxis: medium
+  subordination: medium
+  subject_repetition: high
+  pronoun_variation: low
+  fragments: occasional, for comic or deflating effect
+  sentence_openings:
+    - the subject's name
+    - a time anchor
+    - a short adverbial phrase
+  notes:
+    - "Dialogue can carry more of the scene than in the more formal registers."
+    - "Allow a dry sentence to land without comment."
+targets:
+  meanSentenceWords: [13, 21]
+  shortSentenceRatio: [0.28, 0.46]
+  longSentenceRatio: [0.01, 0.10]
+  veryLongSentenceRatio: [0, 0.02]
+  emDashPer1k: [0, 3]
+  semicolonPer1k: [0, 4]
+  exclamationPer1k: [0, 0.5]
+  ellipsisPer1k: [1, 7]
+  questionPer1k: [1, 12]
+  hedgePer1k: [5, 14]
+  filterVerbPer1k: [5, 16]
+  abstractionRatio: [0.005, 0.06]
+  similePer1k: [0, 4]
+  adverbRatio: [0, 0.04]
+  dialogueRatio: [0.22, 0.42]
+  nameToPronounRatio: [0.5, 2.0]
+  concretePer1k: [9, 30]
+  avgParagraphWords: [30, 90]
+lexicon:
+  prefer:
+    - in any case
+    - after all
+    - a little
+    - for a while
+    - I suppose
+    - it didn't matter
+  avoid:
+    - luminous
+    - exquisite
+    - transcendent
+  banned_idioms:
+    - a wave of
+    - in that moment
+    - before she knew it
+    - the weight of
+punctuation:
+  italics_emphasis: false
+  notes:
+    - "Exclamation marks are permitted in dialogue, rarely."
+tics:
+  - phrase: in any case
+    per1kMax: 1.2
+  - phrase: a little
+    per1kMax: 1.8
+dialogue:
+  tags: [said, asked]
+  tag_variety: low
+  honorifics: preserve
+  particles: minimal
+exemplars:
+  - before: "A chill ran down her spine as the door creaked open."
+    after: "The door opened. She put her hand on the wall. It was cold, and she left it there."
+    note: sensation externalised
+  - before: "He was a man of few words, but his silence spoke volumes."
+    after: "He did not say much. When he did speak, it was usually to ask for something."
+    note: idiom replaced by behaviour
+  - before: "The evening descended into awkwardness."
+    after: "Nobody said anything for a while. Then somebody laughed, and that was worse."
+    note: named state replaced by an event

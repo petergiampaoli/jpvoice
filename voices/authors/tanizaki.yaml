@@ -1,0 +1,60 @@
+id: tanizaki
+kind: author
+display: Jun'ichirō Tanizaki
+life: 1886–1965
+tradition: Japanese modernism; sensualist, essayist, social historian
+summary: >-
+  Tanizaki is a sensualist and a social historian at once. Domestic detail is
+  accumulated patiently — food, plumbing, the grain of wood, the state of a
+  woman's teeth — until the arrangement of a household becomes an argument about
+  desire. The narrators are frank and appetitive, sometimes comic, never
+  sentimental. Pleasure is always entangled with power, and the prose is willing
+  to be ugly about it.
+poetics:
+  image_field:
+    - skin
+    - silk
+    - lacquer
+    - tatami
+    - shadow
+    - teeth
+    - powder
+    - rain
+    - food
+    - drains
+    - electric light
+  motifs:
+    - desire and its disguises
+    - tradition against modernity
+    - the tyranny of the beloved
+    - the body's small failures
+    - the eroticism of domestic arrangement
+  structure: >-
+    Long, patient accumulation of domestic detail, then a shift in the balance of
+    power between two people. Scenes are rooms. Time passes through meals and
+    renovations.
+  pov_default: third-limited
+  tense_default: past
+  interiority: frank, appetitive, occasionally comic
+  endings: often a quiet concession or an unexpected appetite
+  forbidden:
+    - sentimentality without appetite
+    - mechanical plotting
+    - purity of motive
+lexicon:
+  prefer:
+    - skin
+    - damp
+    - shadow
+    - the smell of
+    - flesh
+    - teeth
+    - appetite
+  avoid:
+    - spiritual
+    - transcendent
+    - pure
+    - innocent
+targets:
+  dialogueRatio: [0.20, 0.38]
+  concretePer1k: [12, 36]

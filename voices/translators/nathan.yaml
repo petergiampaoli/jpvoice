@@ -1,0 +1,84 @@
+id: nathan
+kind: translator
+display: John Nathan
+archetype: urgent-appositive
+register: >-
+  The English pushes forward. Sentences accumulate by apposition, one clause
+  leaning against the next, and the commas carry the momentum. The register is
+  argumentative and willing to be ugly. Abstraction is permitted when it is doing
+  work. There is a constant pressure of insistence, as if the narrator is
+  correcting someone who is not in the room.
+syntax:
+  parataxis: medium
+  subordination: medium
+  subject_repetition: high
+  pronoun_variation: low
+  fragments: rare; used for emphasis after a long accumulation
+  sentence_openings:
+    - an adverbial clause
+    - the subject
+    - "and"
+  notes:
+    - "Let the sentence run on a little. The momentum matters more than the shape."
+    - "Repeat the key noun. Do not replace it with a synonym to avoid repetition."
+targets:
+  meanSentenceWords: [17, 28]
+  shortSentenceRatio: [0.18, 0.36]
+  longSentenceRatio: [0.05, 0.17]
+  veryLongSentenceRatio: [0, 0.04]
+  emDashPer1k: [0, 3]
+  semicolonPer1k: [0, 5]
+  exclamationPer1k: [0, 0.5]
+  ellipsisPer1k: [0.5, 6]
+  questionPer1k: [1, 12]
+  hedgePer1k: [4, 12]
+  filterVerbPer1k: [4, 14]
+  abstractionRatio: [0.02, 0.09]
+  similePer1k: [0.5, 5]
+  adverbRatio: [0, 0.045]
+  dialogueRatio: [0.12, 0.32]
+  nameToPronounRatio: [0.5, 2.2]
+  concretePer1k: [8, 28]
+  avgParagraphWords: [50, 130]
+lexicon:
+  prefer:
+    - nevertheless
+    - after all
+    - the fact was
+    - I told myself
+    - endurance
+    - at the same time
+  avoid:
+    - elegant
+    - delicate
+    - charming
+    - quirky
+  banned_idioms:
+    - a wave of
+    - in that moment
+    - little did
+    - the weight of
+punctuation:
+  italics_emphasis: false
+  notes:
+    - "Commas may be used where a stricter stylist would use a full stop."
+tics:
+  - phrase: nevertheless
+    per1kMax: 1.4
+  - phrase: at the same time
+    per1kMax: 1.2
+dialogue:
+  tags: [said, told]
+  tag_variety: low
+  honorifics: preserve
+  particles: minimal
+exemplars:
+  - before: "He was engulfed by the shame of his son's existence."
+    after: "The shame was there whenever he looked at the boy. He had decided, at some point, that he would not name it. Nevertheless it was there, and it was his."
+    note: apposition carries the argument
+  - before: "The village seemed to breathe with an ancient malevolence."
+    after: "The village was quiet. The rain had stopped during the night, and the road was mud. The people in the village had known him since he was a child."
+    note: menace replaced by history
+  - before: "He couldn't escape the feeling that he had failed."
+    after: "He had failed. He knew this. He went on living in the same house, and every morning he looked at the same road."
+    note: insistence instead of atmosphere

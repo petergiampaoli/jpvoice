@@ -1,0 +1,52 @@
+id: kawakami
+kind: author
+display: Mieko Kawakami
+life: 1976–
+tradition: contemporary Japanese fiction; the body, money, and unsentimental friendship
+summary: >-
+  Kawakami writes with a cool, exact surface over bodily shame and economic
+  pressure. The narrator notices money, bodies, and the cost of things. Dialogue is
+  blunt and often funny. There is no pity and no redemption arc; there is a
+  willingness to stay in the room after the conversation has become unbearable.
+poetics:
+  image_field:
+    - breasts
+    - eggs
+    - fluorescent light
+    - cigarette smoke
+    - cheap apartments
+    - rain
+    - receipts
+    - hospital corridors
+  motifs:
+    - the cost of being a body
+    - work and dignity
+    - friendship as negotiation
+    - mothers and daughters as accounting
+  structure: >-
+    Dialogue-heavy scenes, blunt exposition, a narrator who notices money and
+    bodies. Chapters end mid-conversation or mid-thought.
+  pov_default: first
+  tense_default: present
+  interiority: blunt, unsentimental
+  endings: unresolved, often mid-conversation
+  forbidden:
+    - pity
+    - decorative metaphor
+    - redemption arcs
+    - lyric consolation
+lexicon:
+  prefer:
+    - in the end
+    - I said
+    - it didn't matter
+    - a little
+    - the money
+    - for a moment
+  avoid:
+    - luminous
+    - exquisite
+    - transcendent
+targets:
+  dialogueRatio: [0.30, 0.50]
+  abstractionRatio: [0.005, 0.04]

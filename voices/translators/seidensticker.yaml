@@ -1,0 +1,93 @@
+id: seidensticker
+kind: translator
+display: Edward G. Seidensticker
+archetype: lyric-formal
+register: >-
+  The English is quiet, slightly formal, and unhurried. It keeps the comma splice,
+  the plain noun, and the repeated name. Sentences end early and let the silence
+  do the rest. Nothing is italicised for emphasis. The register sounds a little
+  older than contemporary English and a little more patient.
+syntax:
+  parataxis: high
+  subordination: low
+  subject_repetition: high
+  pronoun_variation: low
+  fragments: allowed for weather, image, and the end of a scene
+  sentence_openings:
+    - a noun phrase
+    - a time anchor
+    - the subject's name
+  notes:
+    - "Keep the comma splice. Two clauses joined by a comma are native to this register."
+    - "Let a short declarative stand alone after a longer one. Do not connect everything."
+targets:
+  meanSentenceWords: [11, 17]
+  shortSentenceRatio: [0.34, 0.54]
+  longSentenceRatio: [0, 0.07]
+  veryLongSentenceRatio: [0, 0.01]
+  emDashPer1k: [0, 1.5]
+  semicolonPer1k: [0, 3]
+  exclamationPer1k: [0, 0.4]
+  ellipsisPer1k: [1.0, 7.0]
+  questionPer1k: [0, 8]
+  hedgePer1k: [5, 15]
+  filterVerbPer1k: [6, 18]
+  abstractionRatio: [0, 0.055]
+  similePer1k: [0, 4]
+  adverbRatio: [0, 0.035]
+  dialogueRatio: [0.14, 0.32]
+  nameToPronounRatio: [0.55, 2.4]
+  concretePer1k: [10, 34]
+  avgParagraphWords: [28, 80]
+lexicon:
+  prefer:
+    - white
+    - cold
+    - a little
+    - for a while
+    - it seemed
+    - perhaps
+    - after all
+    - rather
+    - the sound of
+  avoid:
+    - passion
+    - destiny
+    - suddenly
+    - literally
+    - incredible
+  banned_idioms:
+    - a wave of
+    - the weight of
+    - could not help but
+    - in that moment
+    - made her way
+    - made his way
+punctuation:
+  italics_emphasis: false
+  notes:
+    - "No italics for emphasis. Japanese does not mark emphasis that way."
+tics:
+  - phrase: for a while
+    per1kMax: 1.6
+  - phrase: a little
+    per1kMax: 2.0
+  - phrase: it seemed
+    per1kMax: 1.2
+  - phrase: perhaps
+    per1kMax: 1.5
+dialogue:
+  tags: [said]
+  tag_variety: none
+  honorifics: preserve Mr. and Mrs.; leave -san implicit where distance is implied
+  particles: trailing ellipsis, minimal
+exemplars:
+  - before: "A wave of grief washed over her, and she felt her throat tighten."
+    after: "She looked at the teacup. For a while she did not say anything. Then she said that she was a little tired."
+    note: affect displaced into object and time
+  - before: "The station was eerily quiet, as if the town were holding its breath."
+    after: "The station was quiet. Snow had gathered on the timetable. Somewhere a train door closed."
+    note: simile replaced by three facts
+  - before: "He realized in that moment that he had never truly known her."
+    after: "He looked at her hands. He had known her for eleven years. He did not know what she was thinking."
+    note: realisation converted to arithmetic

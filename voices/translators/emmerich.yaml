@@ -1,0 +1,87 @@
+id: emmerich
+kind: translator
+display: Michael Emmerich
+archetype: literal-lyric
+register: >-
+  The English preserves more of the original's awkwardness than a smoother
+  translator would. Sentences can stop without settling. Rhythm is carried by
+  repetition and by short paragraphs that refuse to develop. The register is
+  slightly stranger and slightly cooler than Seidensticker, and more willing to
+  leave a construction unresolved.
+syntax:
+  parataxis: high
+  subordination: low
+  subject_repetition: high
+  pronoun_variation: low
+  fragments: frequent; a fragment may carry a whole paragraph
+  sentence_openings:
+    - a noun phrase
+    - a time anchor
+    - "and"
+  notes:
+    - "Prefer the unresolved construction. Do not tidy the sentence into English ease."
+    - "Allow a paragraph of one sentence."
+targets:
+  meanSentenceWords: [9, 15]
+  shortSentenceRatio: [0.40, 0.60]
+  longSentenceRatio: [0, 0.05]
+  veryLongSentenceRatio: [0, 0.01]
+  emDashPer1k: [0, 2.0]
+  semicolonPer1k: [0, 2]
+  exclamationPer1k: [0, 0.3]
+  ellipsisPer1k: [2.0, 10.0]
+  questionPer1k: [0, 9]
+  hedgePer1k: [6, 18]
+  filterVerbPer1k: [5, 16]
+  abstractionRatio: [0, 0.05]
+  similePer1k: [0, 3]
+  adverbRatio: [0, 0.032]
+  dialogueRatio: [0.12, 0.30]
+  nameToPronounRatio: [0.6, 2.6]
+  concretePer1k: [10, 36]
+  avgParagraphWords: [20, 65]
+lexicon:
+  prefer:
+    - and
+    - for a while
+    - a little
+    - perhaps
+    - somehow
+    - the sound of
+    - it seemed to him
+  avoid:
+    - gracefully
+    - seamlessly
+    - vivid
+  banned_idioms:
+    - a wave of
+    - the weight of
+    - in that moment
+    - before she knew it
+    - before he knew it
+punctuation:
+  italics_emphasis: false
+  notes:
+    - "Ellipsis is a unit of time, not a hesitation tic. Use it where someone does not speak."
+tics:
+  - phrase: and
+    per1kMax: 28
+  - phrase: for a while
+    per1kMax: 1.8
+  - phrase: somehow
+    per1kMax: 1.2
+dialogue:
+  tags: [said]
+  tag_variety: none
+  honorifics: preserve
+  particles: trailing ellipsis
+exemplars:
+  - before: "She was overwhelmed by a sense of the past pressing in on all sides."
+    after: "The house was old. The floor made a sound when she walked. She stood in the corridor for a while and did not open the door."
+    note: abstraction replaced by the body in a corridor
+  - before: "The conversation drifted into an uncomfortable silence."
+    after: "Neither of them said anything. The tea was cold. He looked at the window."
+    note: named state replaced by objects
+  - before: "It was a strangely beautiful evening."
+    after: "The evening was beautiful. It was also strange. He could not say why."
+    note: keep the awkwardness

@@ -1,0 +1,64 @@
+id: kawabata
+kind: author
+display: Yasunari Kawabata
+life: 1899–1972
+tradition: Japanese modernist; Nobel laureate, 1968
+summary: >-
+  Kawabata writes by subtraction. Nothing is explained, and very little is
+  claimed. A scene is built from two or three sensory facts and one gesture that
+  is not completed. People are separated by a distance the prose never names.
+  Beauty is always already passing. The sentences are short, the paragraphs are
+  quiet, and the ending refuses to settle.
+poetics:
+  image_field:
+    - snow
+    - cold
+    - glass
+    - mirrors
+    - white walls
+    - mountains
+    - tea
+    - trains
+    - skin
+    - flowers
+    - twilight
+  motifs:
+    - the distance between people who are close
+    - beauty that is already passing
+    - memory held in objects rather than minds
+    - the failure of language at the moment it is needed
+    - the body as a fact that cannot be discussed
+  structure: >-
+    Scenes are built from two or three sensory facts and one withheld gesture.
+    Time moves by season and by train journey, not by plot. A conversation will
+    stop before it reaches its subject, and the narration will attend to the
+    teacup instead.
+  pov_default: third-limited
+  tense_default: past
+  interiority: sparse, arrives late, never explained
+  endings: unresolved, closing on an image or a change in weather
+  forbidden:
+    - explaining a symbol
+    - stating a character's psychology
+    - raising the rhetorical temperature
+    - naming the emotion the scene is about
+lexicon:
+  prefer:
+    - white
+    - cold
+    - silence
+    - the sound of
+    - for a while
+    - a little
+    - it seemed
+    - perhaps
+  avoid:
+    - passion
+    - desire
+    - soul
+    - destiny
+    - eternity
+    - overwhelming
+targets:
+  dialogueRatio: [0.14, 0.30]
+  concretePer1k: [10, 32]

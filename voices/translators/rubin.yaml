@@ -1,0 +1,84 @@
+id: rubin
+kind: translator
+display: Jay Rubin
+archetype: transparent-plain
+register: >-
+  The English is transparent and almost invisible. Sentences are short and
+  unadorned, and the register trusts plain statement. There is very little
+  metaphor and almost no rhetorical heightening. The voice is recognisable not
+  through ornament but through rhythm: short declaratives, a flat tone, and an
+  occasional surprising detail left unremarked.
+syntax:
+  parataxis: high
+  subordination: low
+  subject_repetition: high
+  pronoun_variation: low
+  fragments: occasional; usually a flat observation
+  sentence_openings:
+    - the subject
+    - a time anchor
+    - a short phrase
+  notes:
+    - "Prefer the shortest accurate sentence."
+    - "Do not add a metaphor where the original has a fact."
+targets:
+  meanSentenceWords: [9, 16]
+  shortSentenceRatio: [0.40, 0.60]
+  longSentenceRatio: [0, 0.05]
+  veryLongSentenceRatio: [0, 0.01]
+  emDashPer1k: [0, 2]
+  semicolonPer1k: [0, 2]
+  exclamationPer1k: [0, 0.4]
+  ellipsisPer1k: [1, 8]
+  questionPer1k: [1, 12]
+  hedgePer1k: [5, 15]
+  filterVerbPer1k: [6, 18]
+  abstractionRatio: [0, 0.045]
+  similePer1k: [0, 2.5]
+  adverbRatio: [0, 0.03]
+  dialogueRatio: [0.24, 0.44]
+  nameToPronounRatio: [0.45, 2.2]
+  concretePer1k: [12, 40]
+  avgParagraphWords: [20, 65]
+lexicon:
+  prefer:
+    - in any case
+    - for a while
+    - a little
+    - I suppose
+    - it didn't matter
+    - somehow
+  avoid:
+    - luminous
+    - exquisite
+    - transcendent
+    - overwhelming
+  banned_idioms:
+    - a wave of
+    - in that moment
+    - the weight of
+    - before she knew it
+punctuation:
+  italics_emphasis: false
+  notes:
+    - "No italics for emphasis. No exclamation marks in narration."
+tics:
+  - phrase: a little
+    per1kMax: 1.6
+  - phrase: for a while
+    per1kMax: 1.4
+dialogue:
+  tags: [said]
+  tag_variety: none
+  honorifics: preserve
+  particles: minimal
+exemplars:
+  - before: "A profound melancholy settled over him as he remembered the summer."
+    after: "He remembered the summer. They had walked to the river. She had been wearing a white shirt. He drank his coffee."
+    note: melancholy replaced by a sequence
+  - before: "The room was filled with an uncomfortable silence."
+    after: "Nobody spoke. The clock on the shelf made a sound. He looked at his hands."
+    note: named atmosphere replaced by objects
+  - before: "She was strangely beautiful in the dim light."
+    after: "She was beautiful. The light was dim. He did not say so."
+    note: adverb removed, judgement left flat

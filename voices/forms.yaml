@@ -1,0 +1,43 @@
+# Forms shape both structure and voice.
+# `shortSentenceShift` and `dialogueRatioShift` adjust the translator's bands:
+# shorter forms carry more fragments; longer forms carry more dialogue and procedure.
+forms:
+  flash:
+    label: flash fiction
+    words: [400, 1200]
+    sceneCap: 1
+    wordsPerScene: [400, 1200]
+    dialogueRatioShift: -0.04
+    shortSentenceShift: 0.08
+    interiority: minimal; one turn only
+    notes: One scene. One turn. End on an object or a fact.
+
+  short:
+    label: short story
+    words: [1200, 6000]
+    sceneCap: 7
+    wordsPerScene: [800, 1600]
+    dialogueRatioShift: 0
+    shortSentenceShift: 0
+    interiority: sparse; two or three interior beats
+    notes: Three to five scenes. One irreversible change.
+
+  novella:
+    label: novella
+    words: [15000, 45000]
+    sceneCap: 40
+    wordsPerScene: [900, 1600]
+    dialogueRatioShift: 0.02
+    shortSentenceShift: -0.02
+    interiority: recurrent; never explanatory
+    notes: Scale by adding scenes, not by lengthening them. A scene past 1,600 words sags.
+
+  novel:
+    label: novel
+    words: [45000, 120000]
+    sceneCap: 90
+    wordsPerScene: [900, 1600]
+    dialogueRatioShift: 0.02
+    shortSentenceShift: -0.02
+    interiority: recurring across chapters
+    notes: Chapter-level style budgets and a persistent bible are mandatory.

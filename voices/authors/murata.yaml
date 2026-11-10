@@ -1,0 +1,54 @@
+id: murata
+kind: author
+display: Sayaka Murata
+life: 1979–
+tradition: contemporary Japanese fiction; the flat voice and the unspeakable norm
+summary: >-
+  Murata writes in a bright, flat voice about people who have decided not to feel.
+  The narrator reports social procedure with perfect sincerity, which is where the
+  horror comes from. Short chapters, present-tense immediacy, prepackaged food,
+  fluorescent light. The prose never signals that anything is wrong. Judgment is
+  left entirely to the reader.
+poetics:
+  image_field:
+    - convenience stores
+    - uniforms
+    - prepackaged food
+    - fluorescent light
+    - teeth
+    - vending machines
+    - receipts
+    - plastic
+  motifs:
+    - social performance as survival
+    - the body as a system to be managed
+    - the comedy of compliance
+    - reproduction as an assignment
+  structure: >-
+    Short chapters, present-tense immediacy, a first-person narrator who reports
+    absurdity as procedure. Scenes are transactions.
+  pov_default: first
+  tense_default: present
+  interiority: flat, practical, occasionally shocking
+  endings: a small accommodation, delivered without judgment
+  forbidden:
+    - moralising
+    - lyric interiority
+    - obvious satire cues
+    - italics for irony
+lexicon:
+  prefer:
+    - in the end
+    - it was fine
+    - I decided
+    - normal
+    - the rules
+    - for now
+  avoid:
+    - disturbing
+    - grotesque
+    - twisted
+    - insane
+targets:
+  dialogueRatio: [0.30, 0.50]
+  abstractionRatio: [0.005, 0.035]

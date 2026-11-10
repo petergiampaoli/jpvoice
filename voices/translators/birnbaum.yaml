@@ -1,0 +1,83 @@
+id: birnbaum
+kind: translator
+display: Alfred Birnbaum
+archetype: hardboiled-cool
+register: >-
+  The English is clipped, cool, and faintly hard-boiled. The narrator reports
+  without insisting and is funny without signalling it. Sentences are short.
+  Fragments are common. The register is willing to be slangy in a minor key and
+  precise about brands, music, and objects. Emotion is present as an absence.
+syntax:
+  parataxis: high
+  subordination: low
+  subject_repetition: medium
+  pronoun_variation: low
+  fragments: common; used for timing
+  sentence_openings:
+    - the subject
+    - a noun phrase
+    - "and"
+  notes:
+    - "Let a sentence be a shrug."
+    - "Specific objects do the work that adjectives would do elsewhere."
+targets:
+  meanSentenceWords: [10, 18]
+  shortSentenceRatio: [0.34, 0.54]
+  longSentenceRatio: [0, 0.07]
+  veryLongSentenceRatio: [0, 0.01]
+  emDashPer1k: [1, 6]
+  semicolonPer1k: [0, 2]
+  exclamationPer1k: [0, 0.5]
+  ellipsisPer1k: [1, 7]
+  questionPer1k: [1, 12]
+  hedgePer1k: [5, 15]
+  filterVerbPer1k: [5, 16]
+  abstractionRatio: [0, 0.045]
+  similePer1k: [0, 3.5]
+  adverbRatio: [0, 0.035]
+  dialogueRatio: [0.26, 0.46]
+  nameToPronounRatio: [0.4, 2.0]
+  concretePer1k: [14, 42]
+  avgParagraphWords: [18, 60]
+lexicon:
+  prefer:
+    - in any case
+    - for a while
+    - it didn't matter
+    - I suppose
+    - a little
+    - somehow
+  avoid:
+    - luminous
+    - exquisite
+    - transcendent
+    - overwhelming
+  banned_idioms:
+    - a wave of
+    - in that moment
+    - the weight of
+    - time seemed to slow
+punctuation:
+  italics_emphasis: false
+  notes:
+    - "A dash may stand in for a thought that is not finished."
+tics:
+  - phrase: in any case
+    per1kMax: 1.4
+  - phrase: it didn't matter
+    per1kMax: 1.0
+dialogue:
+  tags: [said]
+  tag_variety: none
+  honorifics: preserve
+  particles: minimal; a trailing ellipsis is permitted once per exchange
+exemplars:
+  - before: "She had an aura of mystery that instantly captivated him."
+    after: "She had small ears. She smoked a cigarette and did not say much. He watched her and thought about nothing in particular."
+    note: aura replaced by ears
+  - before: "A strange sense of unease settled in the room."
+    after: "The phone rang. Nobody answered it. It stopped, and then it rang again."
+    note: unease replaced by an event
+  - before: "He was utterly exhausted."
+    after: "He made coffee. He drank half of it and put the cup in the sink. It was four o'clock."
+    note: exhaustion rendered as procedure

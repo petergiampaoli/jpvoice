@@ -1,0 +1,81 @@
+id: gabriel
+kind: translator
+display: Philip Gabriel
+archetype: smooth-lyric
+register: >-
+  The English is smooth and slightly lyrical, with more warmth than Birnbaum and
+  more shape than Rubin. Sentences are mid-length and flow easily. The register
+  permits a little beauty, provided it is attached to something concrete. It is
+  the most readerly of the Murakami registers and the least strange.
+syntax:
+  parataxis: medium
+  subordination: low
+  subject_repetition: high
+  pronoun_variation: low
+  fragments: occasional, for a soft landing
+  sentence_openings:
+    - the subject
+    - a time anchor
+    - a short sensory phrase
+  notes:
+    - "Allow the sentence a little air. Do not overpack it."
+    - "A lyric sentence must be followed by a plain one."
+targets:
+  meanSentenceWords: [11, 18]
+  shortSentenceRatio: [0.34, 0.54]
+  longSentenceRatio: [0, 0.07]
+  veryLongSentenceRatio: [0, 0.01]
+  emDashPer1k: [0, 2.5]
+  semicolonPer1k: [0, 3]
+  exclamationPer1k: [0, 0.4]
+  ellipsisPer1k: [1, 7]
+  questionPer1k: [1, 12]
+  hedgePer1k: [5, 15]
+  filterVerbPer1k: [5, 16]
+  abstractionRatio: [0, 0.05]
+  similePer1k: [0.5, 4]
+  adverbRatio: [0, 0.035]
+  dialogueRatio: [0.22, 0.42]
+  nameToPronounRatio: [0.45, 2.2]
+  concretePer1k: [11, 36]
+  avgParagraphWords: [24, 75]
+lexicon:
+  prefer:
+    - in any case
+    - for a while
+    - a little
+    - I suppose
+    - after all
+    - somehow
+  avoid:
+    - transcendent
+    - destiny
+    - overwhelming
+  banned_idioms:
+    - a wave of
+    - in that moment
+    - the weight of
+punctuation:
+  italics_emphasis: false
+  notes:
+    - "Keep punctuation light. Let the paragraph break do the work."
+tics:
+  - phrase: a little
+    per1kMax: 1.8
+  - phrase: for a while
+    per1kMax: 1.4
+dialogue:
+  tags: [said]
+  tag_variety: none
+  honorifics: preserve
+  particles: trailing ellipsis, minimal
+exemplars:
+  - before: "The memory hit him like a physical blow, leaving him breathless."
+    after: "He remembered the kitchen. His mother was cutting something on the board. She did not turn around. He had wanted her to turn around."
+    note: blow replaced by a room
+  - before: "A deep sadness filled her."
+    after: "She sat at the table for a while. The rain had stopped. She did not turn on the light."
+    note: sadness replaced by posture and weather
+  - before: "It was a moment of perfect clarity."
+    after: "For a moment he understood it. Then the understanding was gone, and he was standing in the same corridor."
+    note: epiphany given a duration

@@ -1,0 +1,29 @@
+# Which author/translator combinations actually happened in English.
+# Anything not listed here is still usable, but is marked `synthetic`
+# and labelled as extrapolated in every prompt and report.
+pairings:
+  kawabata/seidensticker: canonical
+  kawabata/emmerich: canonical
+
+  mishima/keene: canonical
+  mishima/mccarthy: canonical
+
+  tanizaki/seidensticker: canonical
+  tanizaki/mccarthy: canonical
+
+  dazai/keene: canonical
+  dazai/carpenter: canonical
+  dazai/mccarthy: canonical
+
+  abe/saunders: canonical
+
+  oe/nathan: canonical
+  oe/bester: canonical
+
+  murakami/birnbaum: canonical
+  murakami/rubin: canonical
+  murakami/gabriel: canonical
+
+  murata/takemori: canonical
+
+  kawakami/bett-boyd: canonical
