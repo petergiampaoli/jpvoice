@@ -1,4 +1,4 @@
-import { chat } from "../llm/client.js";
+import { chat, extractJson } from "../llm/client.js";
 import { cleanProse, countWordsSafe } from "./score.js";
 import type { EffectiveVoice } from "../voice/schema.js";
 import { renderVoiceSpec } from "../voice/render.js";
@@ -22,7 +22,7 @@ export async function generateAnchors(args: {
       {
         role: "system",
         content:
-          "You write short prose anchors in a fixed register. Each anchor is a self-contained passage of 150 to 220 words. No headings, no commentary. Separate passages with a line containing only ---.\n\n# VOICE CONTRACT\n" +
+          "You write short prose anchors in a fixed register. Each anchor is a self-contained passage of 150 to 220 words. No headings, no commentary. Return JSON only.\n\n# VOICE CONTRACT\n" +
           renderVoiceSpec(args.voice),
       },
       {
@@ -35,6 +35,8 @@ export async function generateAnchors(args: {
           `Each passage must be 150 to 220 words.`,
           `These passages will be reused as fixed cadence anchors, so each must stand alone and must not depend on surrounding plot.`,
           `Do not resolve anything. End each on an object or a fact.`,
+          ``,
+          `Return JSON only, exactly: {"anchors":["<passage>","<passage>", ...]}`,
         ]
           .filter(Boolean)
           .join("\n"),
@@ -44,13 +46,21 @@ export async function generateAnchors(args: {
     temperature: 0.95,
     maxTokens: 3000,
     effort: "low",
+    json: true,
     tag: "anchors",
   });
 
-  const parts = res.text
-    .split(/\n\s*---\s*\n/)
-    .map((p) => cleanProse(p))
-    .filter((p) => countWordsSafe(p) > 40);
+  let parts: string[] = [];
+  try {
+    const parsed = extractJson<{ anchors?: string[] }>(res.text);
+    parts = (parsed.anchors ?? []).map((p) => cleanProse(String(p))).filter((p) => countWordsSafe(p) > 40);
+  } catch {
+    // Fall back to delimiter splitting if the model ignored the JSON instruction.
+    parts = res.text
+      .split(/\n\s*---\s*\n/)
+      .map((p) => cleanProse(p))
+      .filter((p) => countWordsSafe(p) > 40);
+  }
 
   if (parts.length === 0) {
     throw new Error("Anchor generation returned no usable passages. Retry, or lower reasoning effort.");

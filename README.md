@@ -72,18 +72,41 @@ A 1,600-word story costs about **$0.024** end to end. Pro is available for polis
 ## Quickstart
 
 ```bash
-jpvoice voices list
-jpvoice init "The Inherited Room" \
-  --voice kawabata/seidensticker \
-  --words 3000 \
-  --premise "A woman returns to her dead sister's apartment and finds the life she did not take." \
-  --path work/inherited-room
+jpvoice --premise "A woman returns to her dead sister's apartment and finds the life she did not take." --wordcount 3000
+```
 
+That is the whole interface. It runs:
+
+```
+plan → anchors (pause for approval) → draft → polish → audit → compile
+```
+
+You supply two things: a premise and a word count. Everything else defaults — the house register, the title, the directory, the scene structure, the budgets.
+
+It asks twice:
+
+1. **Before spending**, with an estimate. Nothing is sent to a model until you answer.
+2. **After generating the three voice anchors**, so the register is approved before it is used for the whole story.
+
+```bash
+jpvoice --premise "..." --wordcount 900 --estimate    # shape and cost, no API calls
+jpvoice --premise "..." --wordcount 900 --yes         # skip both questions
+jpvoice --premise "..." --wordcount 900 --force       # replace an existing project
+```
+
+Re-running the same command **resumes**: an existing plan, anchors, and drafted scenes are reused, and only missing work runs. Re-running a finished story costs nothing and takes under a second.
+
+### Partial runs
+
+Every stage is still its own command:
+
+```bash
 jpvoice --dir work/inherited-room plan
-jpvoice --dir work/inherited-room anchors     # review the frozen register samples
-jpvoice --dir work/inherited-room draft
-jpvoice --dir work/inherited-room polish
+jpvoice --dir work/inherited-room anchors
+jpvoice --dir work/inherited-room draft --ch 2
+jpvoice --dir work/inherited-room polish --scene ch02-s01
 jpvoice --dir work/inherited-room audit
+jpvoice --dir work/inherited-room status
 ```
 
 Output lives in `work/inherited-room/`:
@@ -257,9 +280,10 @@ Modes: `polish` (light touch, register violations only), `revoice` (full registe
 
 | Command | What it does |
 |---|---|
-| `jpvoice voices [key]` | List authors, translators, canonical pairings; show a composed contract |
+| `jpvoice --premise "..." --wordcount N` | Run the whole pipeline; premise and word count are the only required inputs |
+| `jpvoice voices [key]` | List authors, translators, ensembles; show a composed contract |
 | `jpvoice score <file>` | Measure a passage; `--explain`, `--json` |
-| `jpvoice init <title>` | Create a project; `--voice` optional (defaults to house); `--brief` parses word count and POV |
+| `jpvoice init <title>` | Create a project without running it; `--voice` optional (defaults to house) |
 | `jpvoice plan` | Beat sheet, chapters, scene budgets |
 | `jpvoice anchors` | Generate and freeze the drift-control passages |
 | `jpvoice draft` | Draft scenes to budget; `--ch 1-4,6`, `--force` |
@@ -319,7 +343,7 @@ No copyrighted text is stored or shipped. Every voice is a hand-authored descrip
 
 ```bash
 npm run dev -- voices list
-npm test                 # 49 tests: segmentation, stylometry, conformance, budgets, composition, blending
+npm test                 # 59 tests: segmentation, stylometry, conformance, budgets, composition, blending, run decisions
 npm run build
 npx tsx scripts/demo.ts  # the two-register comparison
 ```

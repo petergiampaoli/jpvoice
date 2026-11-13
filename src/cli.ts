@@ -13,6 +13,7 @@ import { countWords, splitSentences } from "./util/text.js";
 import { scoreText } from "./pipeline/score.js";
 import { planStory } from "./pipeline/planner.js";
 import { structureFor } from "./pipeline/budget.js";
+import { runStory } from "./pipeline/run.js";
 import { generateAnchors } from "./pipeline/anchors.js";
 import { draftAll } from "./pipeline/drafter.js";
 import { polishAll, characterNames } from "./pipeline/polisher.js";
@@ -37,6 +38,7 @@ import {
 } from "./store/project.js";
 import { loadConfig } from "./config.js";
 import { resetCost, setLogPath, totalCost } from "./llm/client.js";
+import { closePrompts } from "./util/confirm.js";
 
 const program = new Command();
 
@@ -44,7 +46,75 @@ program
   .name("jpvoice")
   .description("Voice-conditioned story builder for the translated-Japanese register")
   .version("0.1.0")
+  .argument("[premise]", "story premise (or use --premise)")
+  .option("-p, --premise <text>", "story premise")
+  .option("-w, --wordcount <n>", "target word count")
+  .option("--words <n>", "alias for --wordcount")
+  .option("-v, --voice <spec>", "author/translator, a chorus, an ensemble, or house (default)")
+  .option("-t, --title <text>", "working title (derived from the premise by default)")
+  .option("--path <dir>", "project directory (derived from the premise by default)")
+  .option("-f, --form <form>", "flash | short | novella | novel")
+  .option("--pov <pov>", "first | third-limited | third-omniscient")
+  .option("--tense <tense>", "past | present")
+  .option("--force", "replace an existing project with a different story")
+  .option("-y, --yes", "skip both confirmation prompts")
+  .option("--estimate", "print the shape and cost estimate, then exit")
   .option("--dir <path>", "project directory (defaults to the nearest .jpvoice)")
+  .allowExcessArguments(false)
+  .action(
+    async (
+      premiseArg: string | undefined,
+      opts: {
+        premise?: string;
+        wordcount?: string;
+        words?: string;
+        voice?: string;
+        title?: string;
+        path?: string;
+        form?: string;
+        pov?: string;
+        tense?: string;
+        force?: boolean;
+        yes?: boolean;
+        estimate?: boolean;
+      },
+    ) => {
+      const premise = opts.premise ?? premiseArg;
+      const words = Number(opts.wordcount ?? opts.words ?? 0);
+
+      if (!premise || !Number.isFinite(words) || words <= 0) {
+        console.log("");
+        console.log(`  ${pc.bold("usage")}  jpvoice --premise "..." --wordcount 2000`);
+        console.log("");
+        console.log(`  ${pc.dim("runs")}   plan → anchors (pause) → draft → polish → audit`);
+        console.log(`  ${pc.dim("voice")}  optional · defaults to the house register`);
+        console.log(`  ${pc.dim("try")}    jpvoice --premise "a woman inherits her sister's apartment" --wordcount 1500 --estimate`);
+        console.log("");
+        console.log(`  ${pc.dim("partial work")}  jpvoice plan | draft | polish | audit | status`);
+        console.log("");
+        process.exitCode = 1;
+        return;
+      }
+
+      const summary = await runStory({
+        premise,
+        words,
+        voice: opts.voice,
+        title: opts.title,
+        path: opts.path,
+        form: opts.form,
+        pov: opts.pov as EffectiveVoice["pov"] | undefined,
+        tense: opts.tense as EffectiveVoice["tense"] | undefined,
+        force: opts.force,
+        yes: opts.yes,
+        estimate: opts.estimate,
+      }).finally(() => closePrompts());
+
+      if (!summary.pass && !summary.stoppedAtAnchors && !opts.estimate) {
+        process.exitCode = 1;
+      }
+    },
+  )
   .hook("preAction", (thisCommand, actionCommand) => {
     const opts = thisCommand.opts();
     if (actionCommand.name() !== "init" && opts.dir) process.chdir(resolve(opts.dir));
@@ -280,6 +350,7 @@ program
   .option("-b, --brief <text>", "free-form brief, parsed for word count and POV")
   .option("--path <path>", "directory to create")
   .description("Create a story project")
+  .allowExcessArguments(false)
   .action(
     (
       title: string,
@@ -307,7 +378,7 @@ program
       });
 
       const slug = slugify(title);
-      const dir = resolve(opts.path ?? join(process.cwd(), slug));
+      const dir = resolve(opts.path ?? join(process.cwd(), "work", slug));
       mkdirSync(dir, { recursive: true });
 
       const project = initProject(dir, {
@@ -323,6 +394,8 @@ program
 
       console.log("");
       console.log(`  ${pc.green("created")} ${join(dir, ".jpvoice")}`);
+      console.log(`  title    ${title}`);
+      console.log(`  premise  ${project.meta.premise || pc.yellow("(none)")}`);
       console.log(`  voice    ${voice.label}`);
       console.log(`  pairing  ${voice.status}`);
       console.log(`  form     ${voice.form.label}`);
@@ -896,6 +969,7 @@ function wrap(text: string, width: number): string {
 }
 
 program.parseAsync(process.argv).catch((err: unknown) => {
+  closePrompts();
   const msg = err instanceof Error ? err.message : String(err);
   console.error("");
   console.error(pc.red("  error: ") + msg);
