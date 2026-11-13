@@ -1,0 +1,24 @@
+# A chorus blends several voices into one register.
+#
+# Weights are relative and normalise to 1. Members at 15% or above shape the
+# numeric targets. Members below 15% are guests: they contribute named moves and
+# vocabulary, but do not move sentence rhythm or length.
+#
+# Equal weights are the weakest setting. Prefer 70/30 over 50/50.
+
+id: provincial-gothic
+kind: ensemble
+label: Provincial gothic — Kawabata, Abe, Dazai
+mode: blend
+members:
+  - voice: kawabata/seidensticker
+    weight: 60
+  - voice: abe/saunders
+    weight: 30
+  - voice: dazai/keene
+    weight: 10
+notes: >-
+  Snow and tea in the foreground, a bureaucratic trap underneath, and a narrator
+  who occasionally admits he is performing. The Abe layer supplies procedure and
+  the white pot; the Dazai layer is a guest and should only surface in
+  self-address.

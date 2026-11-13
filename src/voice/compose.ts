@@ -1,43 +1,104 @@
 import type { Band } from "../metrics/stylometry.js";
 import { uniq } from "../util/text.js";
-import { findAuthor, findForm, findTranslator, loadPairings } from "./load.js";
-import type { EffectiveVoice, PairingStatus, Targets } from "./schema.js";
+import {
+  canonicalTranslatorFor,
+  findAuthor,
+  findEnsemble,
+  findForm,
+  findTranslator,
+  loadEnsembles,
+  loadHouse,
+  loadPairings,
+} from "./load.js";
+import type {
+  AuthorSpec,
+  ChorusMember,
+  EffectiveVoice,
+  FormSpec,
+  PairingStatus,
+  Targets,
+  TranslatorSpec,
+} from "./schema.js";
+import { blendVoices } from "./blend.js";
+
+export type Pov = EffectiveVoice["pov"];
+export type Tense = EffectiveVoice["tense"];
+
+export type VoiceRequest =
+  | { kind: "single"; key: string }
+  | { kind: "house" }
+  | { kind: "ensemble"; id: string }
+  | { kind: "blend"; members: Array<{ key: string; weight: number }> };
 
 function shiftBand(band: Band | undefined, delta: number): Band | undefined {
   if (!band || delta === 0) return band;
   return [Math.max(0, band[0] + delta), Math.max(0, band[1] + delta)];
 }
 
-export function parseVoiceKey(key: string): { author: string; translator: string } {
-  const [author, translator] = key.split("/");
-  if (!author || !translator) {
-    throw new Error(`Voice must be written author/translator, e.g. kawabata/seidensticker (got "${key}")`);
+export function parseVoiceRequest(spec: string): VoiceRequest {
+  const trimmed = spec.trim();
+  if (!trimmed) return { kind: "house" };
+  const lower = trimmed.toLowerCase();
+  if (lower === "house" || lower === "house/house") return { kind: "house" };
+
+  if (trimmed.includes(",")) {
+    const members = trimmed.split(",").map((part) => {
+      const [keyPart, weightPart] = part.split(":");
+      const key = (keyPart ?? "").trim();
+      if (!key) throw new Error(`Empty voice in chorus: "${spec}"`);
+      const weight = weightPart === undefined ? 1 : Number(weightPart);
+      if (!Number.isFinite(weight) || weight <= 0) {
+        throw new Error(`Bad chorus weight "${weightPart}" for ${key}`);
+      }
+      return { key, weight };
+    });
+    if (members.length < 2) throw new Error("A chorus needs at least two voices, separated by commas.");
+    return { kind: "blend", members };
   }
-  return { author, translator };
+
+  if (!trimmed.includes("/")) {
+    if (loadEnsembles().some((e) => e.id.toLowerCase() === lower)) {
+      return { kind: "ensemble", id: trimmed };
+    }
+    return { kind: "single", key: trimmed };
+  }
+
+  return { kind: "single", key: trimmed };
 }
 
-export function composeVoice(opts: {
-  key: string;
-  form?: string;
-  pov?: EffectiveVoice["pov"];
-  tense?: EffectiveVoice["tense"];
-}): EffectiveVoice {
-  const { author: authorId, translator: translatorId } = parseVoiceKey(opts.key);
-  const author = findAuthor(authorId);
-  const translator = findTranslator(translatorId);
-  const form = findForm(opts.form ?? "short");
+function resolvePair(key: string): { authorId: string; translatorId: string } {
+  if (key.includes("/")) {
+    const [authorId, translatorId] = key.split("/");
+    if (!authorId || !translatorId) {
+      throw new Error(`Voice must be written author/translator, e.g. kawabata/seidensticker (got "${key}")`);
+    }
+    return { authorId, translatorId };
+  }
+  const author = findAuthor(key);
+  const translatorId = canonicalTranslatorFor(author.id);
+  if (!translatorId) {
+    throw new Error(`No canonical translator for "${author.id}". Write ${author.id}/<translator>.`);
+  }
+  return { authorId: author.id, translatorId };
+}
 
-  const pairings = loadPairings();
-  const status: PairingStatus =
-    pairings.get(`${author.id}/${translator.id}`.toLowerCase()) ?? "synthetic";
+/** Shared assembly: both single voices and the house register use this path. */
+function assemble(args: {
+  author: AuthorSpec;
+  translator: TranslatorSpec;
+  form: FormSpec;
+  status: PairingStatus;
+  pov?: Pov;
+  tense?: Tense;
+}): EffectiveVoice {
+  const { author, translator, form, status } = args;
 
   const targets: Targets = { ...translator.targets, ...author.targets };
   targets.shortSentenceRatio = shiftBand(targets.shortSentenceRatio, form.shortSentenceShift);
   targets.dialogueRatio = shiftBand(targets.dialogueRatio, form.dialogueRatioShift);
 
-  const pov = opts.pov ?? author.poetics.pov_default;
-  const tense = opts.tense ?? author.poetics.tense_default;
-
+  const pov = args.pov ?? author.poetics.pov_default;
+  const tense = args.tense ?? author.poetics.tense_default;
   const directives: string[] = [];
 
   directives.push(
@@ -109,9 +170,131 @@ export function composeVoice(opts: {
   };
 }
 
+function composeSingle(key: string, form: string, pov?: Pov, tense?: Tense): EffectiveVoice {
+  const { authorId, translatorId } = resolvePair(key);
+  const author = findAuthor(authorId);
+  const translator = findTranslator(translatorId);
+
+  const pairings = loadPairings();
+  const status: PairingStatus =
+    pairings.get(`${author.id}/${translator.id}`.toLowerCase()) ?? "synthetic";
+
+  return assemble({
+    author,
+    translator,
+    form: findForm(form),
+    status,
+    pov,
+    tense,
+  });
+}
+
+function composeHouse(form: string, pov?: Pov, tense?: Tense): EffectiveVoice {
+  const house = loadHouse();
+
+  const author = {
+    id: house.id,
+    kind: "author",
+    display: house.display,
+    tradition: "consensus register",
+    summary: house.summary,
+    poetics: house.poetics,
+    lexicon: { prefer: house.lexicon.prefer, avoid: house.lexicon.avoid },
+    targets: {
+      dialogueRatio: house.targets.dialogueRatio,
+      concretePer1k: house.targets.concretePer1k,
+    },
+  } as AuthorSpec;
+
+  const translator = {
+    id: house.id,
+    kind: "translator",
+    display: "the house translator",
+    archetype: "consensus",
+    register: house.summary,
+    syntax: house.syntax,
+    targets: house.targets,
+    lexicon: {
+      prefer: house.lexicon.prefer,
+      avoid: house.lexicon.avoid,
+      banned_idioms: house.lexicon.banned_idioms,
+    },
+    punctuation: house.punctuation,
+    tics: house.tics,
+    dialogue: house.dialogue,
+    exemplars: house.exemplars,
+  } as TranslatorSpec;
+
+  const voice = assemble({
+    author,
+    translator,
+    form: findForm(form),
+    status: "constructed",
+    pov,
+    tense,
+  });
+  voice.key = "house";
+  voice.label = "House register — translated-Japanese consensus";
+  return voice;
+}
+
+export function composeVoice(opts: {
+  key: string;
+  form?: string;
+  pov?: Pov;
+  tense?: Tense;
+}): EffectiveVoice {
+  const form = opts.form ?? "short";
+  const request = parseVoiceRequest(opts.key);
+
+  switch (request.kind) {
+    case "house":
+      return composeHouse(form, opts.pov, opts.tense);
+
+    case "single":
+      return composeSingle(request.key, form, opts.pov, opts.tense);
+
+    case "ensemble": {
+      const ensemble = findEnsemble(request.id);
+      const parts = ensemble.members.map((m) => ({
+        voice: composeMember(m.voice, form),
+        weight: m.weight,
+      }));
+      return blendVoices(parts, { form: findForm(form), pov: opts.pov, tense: opts.tense, label: ensemble.label });
+    }
+
+    case "blend": {
+      const parts = request.members.map((m) => {
+        if (loadEnsembles().some((e) => e.id.toLowerCase() === m.key.toLowerCase())) {
+          throw new Error(`Nested ensembles are not supported ("${m.key}"). List its voices directly.`);
+        }
+        return { voice: composeMember(m.key, form), weight: m.weight };
+      });
+      return blendVoices(parts, { form: findForm(form), pov: opts.pov, tense: opts.tense });
+    }
+  }
+}
+
+function composeMember(key: string, form: string): EffectiveVoice {
+  const request = parseVoiceRequest(key);
+  if (request.kind === "house") return composeHouse(form);
+  if (request.kind !== "single") {
+    throw new Error(`Chorus members must be a single voice or the house register (got "${key}").`);
+  }
+  return composeSingle(request.key, form);
+}
+
 export function formForWords(words: number): string {
   if (words <= 1200) return "flash";
   if (words <= 6000) return "short";
   if (words <= 45000) return "novella";
   return "novel";
 }
+
+/** Kept for callers that only have a full author/translator string. */
+export function parseVoiceKey(key: string): { author: string; translator: string } {
+  const { authorId, translatorId } = resolvePair(key);
+  return { author: authorId, translator: translatorId };
+}
+
+export type { ChorusMember };

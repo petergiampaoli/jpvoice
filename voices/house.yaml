@@ -1,0 +1,137 @@
+id: house
+kind: house
+display: House register
+summary: >-
+  The consensus register of post-war Japanese fiction in English, with every
+  signature removed. It keeps the mechanisms that translators share — flat
+  affect, parataxis, repeated names, explicit time, object inventory, the
+  punctuation diet — and drops the fingerprints: no one author's imagery, no one
+  translator's cadence. It should read as translated, and it should not read as
+  anybody in particular.
+# The house spec is written by hand, not averaged. Averaging thirteen
+# translators produces the middle of a distribution, which is mush.
+poetics:
+  image_field:
+    - trains
+    - windows
+    - cups
+    - coats
+    - rain
+    - snow
+    - corridors
+    - hands
+    - receipts
+    - tea
+    - stairs
+    - fluorescent light
+  motifs:
+    - the distance between people who are close
+    - the ordinary surface and what it refuses to explain
+    - work and endurance
+    - memory held in objects rather than minds
+    - the body as a fact that cannot be discussed
+  structure: >-
+    Scenes are built from procedure and one withheld gesture. Time is anchored
+    explicitly. A conversation stops before it reaches its subject, and the
+    narration attends to an object instead.
+  pov_default: third-limited
+  tense_default: past
+  interiority: sparse, arrives late, never explained
+  endings: unresolved, closing on an object or a change in weather
+  forbidden:
+    - explaining an image
+    - naming the theme
+    - rhetorical crescendo
+    - stating a character's psychology
+lexicon:
+  prefer:
+    - a little
+    - for a while
+    - somehow
+    - perhaps
+    - it seemed
+    - in any case
+    - after all
+    - rather
+    - the sound of
+  avoid:
+    - suddenly
+    - literally
+    - incredible
+    - luminous
+    - exquisite
+    - transcendent
+  banned_idioms:
+    - a wave of
+    - the weight of
+    - could not help but
+    - in that moment
+    - made her way
+    - made his way
+    - heart pounded
+    - voice barely above a whisper
+    - before she knew it
+    - before he knew it
+    - a chill ran down
+syntax:
+  parataxis: high
+  subordination: low
+  subject_repetition: high
+  pronoun_variation: low
+  fragments: allowed for weather, image, and the end of a scene
+  sentence_openings:
+    - a noun phrase
+    - a time anchor
+    - the subject's name
+  notes:
+    - "Keep the comma splice. Two clauses joined by a comma are native to this register."
+    - "Let a short declarative stand alone after a longer one."
+targets:
+  meanSentenceWords: [11, 18]
+  medianSentenceWords: [9, 15]
+  p90SentenceWords: [22, 38]
+  shortSentenceRatio: [0.34, 0.52]
+  longSentenceRatio: [0, 0.08]
+  veryLongSentenceRatio: [0, 0.015]
+  emDashPer1k: [0, 2]
+  semicolonPer1k: [0, 3]
+  exclamationPer1k: [0, 0.4]
+  ellipsisPer1k: [1, 7]
+  questionPer1k: [0, 10]
+  hedgePer1k: [5, 14]
+  filterVerbPer1k: [5, 16]
+  abstractionRatio: [0, 0.055]
+  similePer1k: [0, 3]
+  adverbRatio: [0, 0.035]
+  dialogueRatio: [0.18, 0.38]
+  nameToPronounRatio: [0.5, 2.2]
+  concretePer1k: [10, 34]
+  avgParagraphWords: [25, 80]
+punctuation:
+  italics_emphasis: false
+  notes:
+    - "No italics for emphasis. Japanese does not mark emphasis that way."
+tics:
+  - phrase: a little
+    per1kMax: 1.8
+  - phrase: for a while
+    per1kMax: 1.4
+  - phrase: somehow
+    per1kMax: 1.1
+  - phrase: perhaps
+    per1kMax: 1.4
+dialogue:
+  tags: [said]
+  tag_variety: none
+  honorifics: preserve Mr. and Mrs.; leave -san implicit where distance is implied
+  particles: trailing ellipsis, minimal
+exemplars:
+  - before: "A wave of grief washed over her, and she felt her throat tighten."
+    after: "She looked at the cup on the table. For a while she did not say anything. Then she said that she was a little tired."
+    note: affect displaced into object and time
+  - before: "The station was eerily quiet, as if the town were holding its breath."
+    after: "The station was quiet. Snow had gathered on the timetable. Somewhere a door closed."
+    note: simile replaced by three facts
+  - before: "He realized in that moment that he had never truly known her."
+    after: "He looked at her hands. He had known her for eleven years. He did not know what she was thinking."
+    note: realisation converted to arithmetic

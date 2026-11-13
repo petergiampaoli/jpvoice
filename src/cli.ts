@@ -5,13 +5,14 @@ import { Command } from "commander";
 import pc from "picocolors";
 
 import { composeVoice, formForWords } from "./voice/compose.js";
-import { findAuthor, findTranslator, loadAuthors, loadPairings, loadTranslators, voicesDir } from "./voice/load.js";
+import { findAuthor, findTranslator, loadAuthors, loadEnsembles, loadHouse, loadPairings, loadTranslators, voicesDir } from "./voice/load.js";
 import { renderVoiceSpec } from "./voice/render.js";
 import type { EffectiveVoice } from "./voice/schema.js";
 import { analyze, detectNames } from "./metrics/stylometry.js";
 import { countWords, splitSentences } from "./util/text.js";
 import { scoreText } from "./pipeline/score.js";
 import { planStory } from "./pipeline/planner.js";
+import { structureFor } from "./pipeline/budget.js";
 import { generateAnchors } from "./pipeline/anchors.js";
 import { draftAll } from "./pipeline/drafter.js";
 import { polishAll, characterNames } from "./pipeline/polisher.js";
@@ -63,8 +64,7 @@ function requireProject(): { dir: string; project: Project } {
 }
 
 function resolveVoice(opts: { voice?: string; form?: string }, project?: Project): EffectiveVoice {
-  const key = opts.voice ?? project?.meta.voiceKey;
-  if (!key) throw new Error("No voice specified. Use --voice author/translator (see `jpvoice voices list`).");
+  const key = opts.voice ?? project?.meta.voiceKey ?? "house";
   const form = opts.form ?? project?.meta.form ?? "short";
   return composeVoice({
     key,
@@ -181,7 +181,12 @@ program
     const authors = loadAuthors();
     const translators = loadTranslators();
     const pairings = loadPairings();
+    const ensembles = loadEnsembles();
 
+    console.log("");
+    console.log(pc.bold("  HOUSE (default)"));
+    const house = loadHouse();
+    console.log(`  house          ${house.display.padEnd(24)} ${pc.dim("consensus register, no signature")}`);
     console.log("");
     console.log(pc.bold("  AUTHORS"));
     for (const a of authors) {
@@ -197,10 +202,20 @@ program
     const canonical = [...pairings.entries()].filter(([, v]) => v === "canonical");
     for (const [key] of canonical) console.log(`  ${key}`);
     console.log("");
+    if (ensembles.length) {
+      console.log(pc.bold("  ENSEMBLES"));
+      for (const e of ensembles) {
+        console.log(
+          `  ${e.id.padEnd(20)} ${pc.dim(e.members.map((m) => `${m.voice} ${m.weight}`).join(" · "))}`,
+        );
+      }
+      console.log("");
+    }
     console.log(
       pc.dim(`  ${authors.length} authors × ${translators.length} translators = ${authors.length * translators.length} voices.`),
     );
     console.log(pc.dim(`  ${canonical.length} are historical pairings; the rest are labelled synthetic.`));
+    console.log(pc.dim(`  Combine any of them: --voice "kawabata/seidensticker:70, abe/saunders:30"`));
     console.log("");
   });
 
@@ -229,6 +244,9 @@ program
 
     console.log(pc.bold(`\n  ${file}`));
     console.log(pc.dim(`  ${voice.label} · ${voice.status} · ${voice.form.label} · ${voice.pov}/${voice.tense}`));
+    if (voice.key === "house") {
+      console.log(pc.dim("  house register (generic) — pass --voice for a specific contract"));
+    }
     printMetrics(metrics, voice, report.pass, report.score);
 
     if (opts.explain) {
@@ -279,15 +297,7 @@ program
       const brief = opts.brief ? parseBrief(opts.brief) : {};
       const words = Number(opts.words ?? brief.words ?? 3000);
       const form = opts.form ?? brief.form ?? formForWords(words);
-      const voiceKey = opts.voice ?? brief.voiceKey;
-
-      if (!voiceKey) {
-        throw new Error(
-          "Choose a voice with --voice. Try:\n" +
-            "  jpvoice init \"Title\" --voice kawabata/seidensticker --words 4000\n" +
-            "  jpvoice init \"Title\" --voice murakami/rubin --words 30000",
-        );
-      }
+      const voiceKey = opts.voice ?? brief.voiceKey ?? "house";
 
       const voice = composeVoice({
         key: voiceKey,
@@ -304,7 +314,7 @@ program
         slug,
         title,
         premise: opts.premise ?? "",
-        voiceKey: voice.key,
+        voiceKey,
         form,
         words,
         pov: voice.pov,
@@ -318,8 +328,9 @@ program
       console.log(`  form     ${voice.form.label}`);
       console.log(`  words    ${words.toLocaleString()}  (band ${Math.round(words * 0.95).toLocaleString()}–${Math.round(words * 1.05).toLocaleString()})`);
       console.log(`  pov      ${voice.pov} / ${voice.tense}`);
-      const scenes = Math.max(1, Math.round(words / ((voice.form.wordsPerScene[0] + voice.form.wordsPerScene[1]) / 2)));
-      console.log(`  scenes   ~${scenes} × ${Math.round(words / scenes)} words`);
+      const structure = structureFor(words, voice.form);
+      const avg = Math.round(words / Math.max(1, structure.totalScenes));
+      console.log(`  scenes   ${structure.totalScenes} × ~${avg} words`);
       console.log("");
       const rel = relative(process.cwd(), dir) || ".";
       console.log(pc.dim(`  next: cd ${rel} && jpvoice plan`));

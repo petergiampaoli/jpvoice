@@ -105,7 +105,58 @@ export type AuthorSpec = z.infer<typeof AuthorSpecSchema>;
 export type TranslatorSpec = z.infer<typeof TranslatorSpecSchema>;
 export type FormSpec = z.infer<typeof FormSpecSchema>;
 
-export type PairingStatus = "canonical" | "synthetic";
+export const HouseSpecSchema = z
+  .object({
+    id: z.string(),
+    kind: z.literal("house"),
+    display: z.string(),
+    summary: z.string(),
+    poetics: AuthorSpecSchema.shape.poetics,
+    lexicon: TranslatorSpecSchema.shape.lexicon,
+    syntax: TranslatorSpecSchema.shape.syntax,
+    targets: TargetsSchema.default({}),
+    punctuation: TranslatorSpecSchema.shape.punctuation,
+    tics: TranslatorSpecSchema.shape.tics,
+    dialogue: TranslatorSpecSchema.shape.dialogue,
+    exemplars: TranslatorSpecSchema.shape.exemplars,
+  })
+  .passthrough();
+
+export type HouseSpec = z.infer<typeof HouseSpecSchema>;
+
+export const EnsembleSpecSchema = z
+  .object({
+    id: z.string(),
+    kind: z.literal("ensemble"),
+    label: z.string().optional(),
+    mode: z.literal("blend").default("blend"),
+    members: z
+      .array(
+        z.object({
+          voice: z.string(),
+          weight: z.number().positive(),
+        }),
+      )
+      .min(2),
+    notes: z.string().optional(),
+  })
+  .passthrough();
+
+export type EnsembleSpec = z.infer<typeof EnsembleSpecSchema>;
+
+export type PairingStatus = "canonical" | "synthetic" | "constructed";
+
+export type ChorusMember = {
+  key: string;
+  label: string;
+  weight: number;
+  role: "dominant" | "secondary" | "guest";
+};
+
+export type ChorusInfo = {
+  mode: "blend";
+  members: ChorusMember[];
+};
 
 export type EffectiveVoice = {
   key: string;
@@ -122,4 +173,5 @@ export type EffectiveVoice = {
   dialogue: TranslatorSpec["dialogue"];
   exemplars: TranslatorSpec["exemplars"];
   directives: string[];
+  chorus?: ChorusInfo;
 };

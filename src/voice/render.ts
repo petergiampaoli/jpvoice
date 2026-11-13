@@ -28,7 +28,21 @@ export function renderVoiceSpec(v: EffectiveVoice): string {
 
   lines.push(`# VOICE CONTRACT`);
   lines.push(`Register: ${v.label}`);
-  lines.push(`Pairing status: ${v.status}${v.status === "synthetic" ? " (extrapolated — not a historical translation)" : ""}`);
+  lines.push(
+    `Pairing status: ${v.status}${
+      v.status === "synthetic"
+        ? " (extrapolated — not a historical translation)"
+        : v.status === "constructed"
+          ? " (no historical pairing)"
+          : ""
+    }`,
+  );
+  if (v.chorus) {
+    lines.push(`Chorus: blend of ${v.chorus.members.length} voices`);
+    for (const m of v.chorus.members) {
+      lines.push(`- ${m.key} ${Math.round(m.weight * 100)}% (${m.role}) — ${m.label}`);
+    }
+  }
   lines.push(`Form: ${v.form.label}`);
   lines.push(`Point of view: ${v.pov}. Tense: ${v.tense}.`);
   lines.push("");

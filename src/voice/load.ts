@@ -4,10 +4,14 @@ import { fileURLToPath } from "node:url";
 import { parse as parseYaml } from "yaml";
 import {
   AuthorSpecSchema,
+  EnsembleSpecSchema,
   FormSpecSchema,
+  HouseSpecSchema,
   TranslatorSpecSchema,
   type AuthorSpec,
+  type EnsembleSpec,
   type FormSpec,
+  type HouseSpec,
   type PairingStatus,
   type TranslatorSpec,
 } from "./schema.js";
@@ -56,6 +60,36 @@ export function loadPairings(): Map<string, PairingStatus> {
     map.set(k.toLowerCase(), v === "canonical" ? "canonical" : "synthetic");
   }
   return map;
+}
+
+export function loadHouse(): HouseSpec {
+  return HouseSpecSchema.parse(readYaml(join(voicesDir(), "house.yaml")));
+}
+
+export function loadEnsembles(): EnsembleSpec[] {
+  const dir = join(voicesDir(), "ensembles");
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((f) => f.endsWith(".yaml") || f.endsWith(".yml"))
+    .map((f) => EnsembleSpecSchema.parse(readYaml(join(dir, f))))
+    .sort((a, b) => a.id.localeCompare(b.id));
+}
+
+export function findEnsemble(id: string): EnsembleSpec {
+  const found = loadEnsembles().find((e) => e.id.toLowerCase() === id.toLowerCase());
+  if (!found) throw new Error(`Unknown ensemble "${id}". Run: jpvoice voices list`);
+  return found;
+}
+
+/** First canonical translator for an author, so `--voice kawabata` works. */
+export function canonicalTranslatorFor(authorId: string): string | null {
+  const prefix = `${authorId.toLowerCase()}/`;
+  for (const [key, status] of loadPairings()) {
+    if (status === "canonical" && key.startsWith(prefix)) {
+      return key.slice(prefix.length);
+    }
+  }
+  return null;
 }
 
 export function findAuthor(id: string): AuthorSpec {

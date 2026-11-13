@@ -100,7 +100,7 @@ manuscript.md
 
 ## The voice library
 
-Nine authors × thirteen translators = 117 composable voices, from 22 spec files. Composition is what makes this tractable: the **author layer** controls imagery, motifs, structure and POV; the **translator layer** controls syntax, lexicon, punctuation and dialogue rendering. The translator wins on texture, the author wins on material.
+Nine authors × thirteen translators = 117 composable voices, from 23 spec files. Composition is what makes this tractable: the **author layer** controls imagery, motifs, structure and POV; the **translator layer** controls syntax, lexicon, punctuation and dialogue rendering. The translator wins on texture, the author wins on material.
 
 | Authors | |
 |---|---|
@@ -121,7 +121,62 @@ Seventeen pairings are **canonical** — that translator actually translated tha
 ```bash
 jpvoice voices kawabata/seidensticker
 jpvoice voices murakami/keene --form novella   # synthetic, flagged
+jpvoice voices kawabata                        # bare author → canonical translator
 ```
+
+### `--voice` is optional
+
+Leave it off and you get the **house register**: a hand-written consensus of the mechanisms with every signature removed. Not an average — averaging thirteen translators produces mush. The house spec is `voices/house.yaml`, status `constructed`, and it never claims to be a historical translation.
+
+```bash
+jpvoice init "Title" --words 2000        # house register
+jpvoice score draft.md                   # labels itself "house register (generic)"
+```
+
+`score` says so out loud, because scoring against the house bands is a looser read than scoring against a named voice.
+
+## Choruses
+
+Blend voices into one register by weighting them:
+
+```bash
+jpvoice init "Title" --voice "kawabata/seidensticker:60, abe/saunders:30, dazai/keene:10"
+```
+
+Or keep the blend as a file in `voices/ensembles/`, then refer to it by name:
+
+```yaml
+id: provincial-gothic
+kind: ensemble
+mode: blend
+members:
+  - { voice: kawabata/seidensticker, weight: 60 }
+  - { voice: abe/saunders,          weight: 30 }
+  - { voice: dazai/keene,           weight: 10 }
+```
+
+```bash
+jpvoice voices provincial-gothic
+```
+
+```bash
+jpvoice init "Title" --voice provincial-gothic
+```
+
+**How the merge works.** Numeric bands are combined by weighted centre and weighted half-width. Banned phrases are **unioned** — a chorus never permits what one member forbids. Tic ceilings are unioned but scaled by each member's weight. The dominant member supplies syntax, POV, tense, and dialogue rendering; everyone else contributes vocabulary, objects, and exemplars.
+
+**The 15% rule.** A member below 15% is a *guest*, not a full member. Guests contribute named moves and up to three image terms; they do not move the numeric targets. Without that split, a 10% member still drags sentence length toward its own, and two distinctive voices average into a bland middle.
+
+Blends are deterministic and labelled `constructed`. `jpvoice voices <name>` prints the full provenance:
+
+```
+Chorus: blend of 3 voices
+- kawabata/seidensticker 60% (dominant)
+- abe/saunders 30% (secondary)
+- dazai/keene 10% (guest)
+```
+
+**Prefer 70/30 over 50/50.** Equal weights are the weakest setting: the average of two strong voices is not a third voice, it is a washed-out middle.
 
 ## Word count is a control loop
 
@@ -204,7 +259,7 @@ Modes: `polish` (light touch, register violations only), `revoice` (full registe
 |---|---|
 | `jpvoice voices [key]` | List authors, translators, canonical pairings; show a composed contract |
 | `jpvoice score <file>` | Measure a passage; `--explain`, `--json` |
-| `jpvoice init <title>` | Create a project; `--brief` parses word count and POV from a sentence |
+| `jpvoice init <title>` | Create a project; `--voice` optional (defaults to house); `--brief` parses word count and POV |
 | `jpvoice plan` | Beat sheet, chapters, scene budgets |
 | `jpvoice anchors` | Generate and freeze the drift-control passages |
 | `jpvoice draft` | Draft scenes to budget; `--ch 1-4,6`, `--force` |
@@ -239,6 +294,8 @@ src/
 voices/
   authors/*.yaml  poetics, imagery, structure, POV
   translators/*.yaml  syntax, targets, lexicon, tics, exemplars
+  house.yaml      the default consensus register
+  ensembles/*.yaml  named choruses (weighted blends)
   forms.yaml      flash · short · novella · novel
   pairings.yaml   canonical vs synthetic
 ```
@@ -262,7 +319,7 @@ No copyrighted text is stored or shipped. Every voice is a hand-authored descrip
 
 ```bash
 npm run dev -- voices list
-npm test                 # 33 tests: segmentation, stylometry, conformance, budgets, composition
+npm test                 # 49 tests: segmentation, stylometry, conformance, budgets, composition, blending
 npm run build
 npx tsx scripts/demo.ts  # the two-register comparison
 ```
