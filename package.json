@@ -4,6 +4,8 @@
   "private": true,
   "type": "module",
   "description": "Voice-conditioned story builder for the translated-Japanese register",
+  "license": "MIT",
+  "author": "Peter Giampaoli",
   "bin": {
     "jpvoice": "./dist/cli.js"
   },

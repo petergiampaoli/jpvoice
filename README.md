@@ -347,3 +347,7 @@ npm test                 # 59 tests: segmentation, stylometry, conformance, budg
 npm run build
 npx tsx scripts/demo.ts  # the two-register comparison
 ```
+
+## License
+
+MIT © 2026 Peter Giampaoli. See [LICENSE](LICENSE).
